@@ -35,7 +35,12 @@
             this.dteStart = new System.Windows.Forms.DateTimePicker();
             this.dteEnd = new System.Windows.Forms.DateTimePicker();
             this.label1 = new System.Windows.Forms.Label();
+            this.btnAvoidOT = new System.Windows.Forms.Button();
+            this.dataGridView2 = new System.Windows.Forms.DataGridView();
+            this.lblOTdoors = new System.Windows.Forms.Label();
+            this.lblOTHours = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.SuspendLayout();
             // 
             // btnGo
@@ -65,7 +70,7 @@
             this.dataGridView1.Location = new System.Drawing.Point(12, 109);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.Size = new System.Drawing.Size(442, 285);
+            this.dataGridView1.Size = new System.Drawing.Size(442, 143);
             this.dataGridView1.TabIndex = 2;
             // 
             // lblHours
@@ -100,11 +105,54 @@
             this.label1.TabIndex = 6;
             this.label1.Text = "To:";
             // 
+            // btnAvoidOT
+            // 
+            this.btnAvoidOT.Location = new System.Drawing.Point(166, 264);
+            this.btnAvoidOT.Name = "btnAvoidOT";
+            this.btnAvoidOT.Size = new System.Drawing.Size(121, 25);
+            this.btnAvoidOT.TabIndex = 7;
+            this.btnAvoidOT.Text = "Avoid Over Time";
+            this.btnAvoidOT.UseVisualStyleBackColor = true;
+            this.btnAvoidOT.Click += new System.EventHandler(this.btnAvoidOT_Click);
+            // 
+            // dataGridView2
+            // 
+            this.dataGridView2.AllowUserToAddRows = false;
+            this.dataGridView2.AllowUserToDeleteRows = false;
+            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView2.Location = new System.Drawing.Point(12, 295);
+            this.dataGridView2.Name = "dataGridView2";
+            this.dataGridView2.RowHeadersVisible = false;
+            this.dataGridView2.Size = new System.Drawing.Size(442, 143);
+            this.dataGridView2.TabIndex = 8;
+            // 
+            // lblOTdoors
+            // 
+            this.lblOTdoors.AutoSize = true;
+            this.lblOTdoors.Location = new System.Drawing.Point(475, 322);
+            this.lblOTdoors.Name = "lblOTdoors";
+            this.lblOTdoors.Size = new System.Drawing.Size(35, 13);
+            this.lblOTdoors.TabIndex = 9;
+            this.lblOTdoors.Text = "label1";
+            // 
+            // lblOTHours
+            // 
+            this.lblOTHours.AutoSize = true;
+            this.lblOTHours.Location = new System.Drawing.Point(475, 345);
+            this.lblOTHours.Name = "lblOTHours";
+            this.lblOTHours.Size = new System.Drawing.Size(35, 13);
+            this.lblOTHours.TabIndex = 10;
+            this.lblOTHours.Text = "label1";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1111, 450);
+            this.Controls.Add(this.lblOTHours);
+            this.Controls.Add(this.lblOTdoors);
+            this.Controls.Add(this.dataGridView2);
+            this.Controls.Add(this.btnAvoidOT);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.dteEnd);
             this.Controls.Add(this.dteStart);
@@ -116,6 +164,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Estimated Overtime";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -130,6 +179,10 @@
         private System.Windows.Forms.DateTimePicker dteStart;
         private System.Windows.Forms.DateTimePicker dteEnd;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnAvoidOT;
+        private System.Windows.Forms.DataGridView dataGridView2;
+        private System.Windows.Forms.Label lblOTdoors;
+        private System.Windows.Forms.Label lblOTHours;
     }
 }
 
