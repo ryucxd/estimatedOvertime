@@ -66,7 +66,7 @@ namespace estimatedOvertime
                 }
             }
 
-            sql = "select COUNT(ID) from dbo.door where date_completion > '" + startDate.ToString("yyyy-MM-dd") + "' AND date_completion < '" + endDate.ToString("yyyy-MM-dd") + "' ";
+            sql = "select COUNT(a.ID) from dbo.door a LEFT OUTER JOIN dbo.door_type AS c ON a.door_type_id = c.id where a.date_completion > '" + startDate.ToString("yyyy-MM-dd") + "' AND a.date_completion < '" + endDate.ToString("yyyy-MM-dd") + "' AND(c.slimline_y_n IS NULL OR c.slimline_y_n = 0)";
             //MessageBox.Show(sql);
             using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
             {
