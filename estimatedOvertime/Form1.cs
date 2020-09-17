@@ -39,6 +39,26 @@ namespace estimatedOvertime
 
         private void btnGo_Click(object sender, EventArgs e)
         {
+            //if overtime was clicked we need to wipe that for readability
+            if (dataGridView2.DataSource != null)
+            {
+                dataGridView2.DataSource = null;
+                dataGridView2.Columns.Clear();
+                lblOTHours.Visible = false;
+                lblOTTitle.Visible = false;
+                lblOT.Visible = false;
+            }
+
+            //make the labels visible
+            lblDoors.Visible = true;
+            lblHours.Visible = true;
+            lblTitle.Visible = true;
+            lblOTdoors.Visible = true;
+
+         
+
+          
+
             string sql = "";
             //okay so the first direction i want to head in is getting nextweek back on button click
             //and maybedump it into a dgv or something
@@ -66,7 +86,9 @@ namespace estimatedOvertime
                 }
             }
 
-            sql = "select COUNT(a.ID) from dbo.door a LEFT OUTER JOIN dbo.door_type AS c ON a.door_type_id = c.id where a.date_completion > '" + startDate.ToString("yyyy-MM-dd") + "' AND a.date_completion < '" + endDate.ToString("yyyy-MM-dd") + "' AND(c.slimline_y_n IS NULL OR c.slimline_y_n = 0)";
+            sql = "select COUNT(a.ID) from dbo.door a LEFT OUTER JOIN dbo.door_program AS b ON a.id = b.door_id LEFT OUTER JOIN dbo.door_type AS c ON a.door_type_id = c.id WHERE(b.programed_by_id IS NULL) AND(a.status_id = 1 OR a.status_id = 2) " +
+                     "AND(c.slimline_y_n IS NULL OR c.slimline_y_n = 0) AND(a.date_completion IS NOT NULL) AND(a.door_type_id <> 48) AND(a.door_type_id <> 113) AND(a.order_number <> 'Bridge Street Cut Downs') AND " +
+                     "a.date_completion >= '" + startDate.ToString("yyyy-MM-dd") + "' AND a.date_completion <= '" + endDate.ToString("yyyy-MM-dd") + "' ";
             //MessageBox.Show(sql);
             using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
             {
@@ -90,7 +112,7 @@ namespace estimatedOvertime
                     
                 }
 
-                lblDoors.Text = "Number of doors between " + startDate.ToShortDateString() + " and  " + endDate.ToShortDateString() + " = " + totalDoors + "     (lates" + lates.ToString() + ")";
+                lblDoors.Text = "Number of doors between " + startDate.ToShortDateString() + " and  " + endDate.ToShortDateString() + " = " + totalDoors + " (number of lates " + lates.ToString() + ")";
 
                 //thats the BASE of the doors sorted (doesnt include onholds etc)
 
@@ -164,17 +186,43 @@ namespace estimatedOvertime
                     hours = hours - remove_hours;
                 }
                 
-                lblHours.Text = "Total hours for the week (no overtime) = " + hours.ToString();
+                lblHours.Text = "Total hours between the two selected dates (no overtime) = " + hours.ToString();
                 totalHours = hours;
-
+                if (totalDoors < totalHours)
+                {
+                    //no overtime is needed 8D
+                    btnAvoidOT.Enabled = false;
+                    lblNoOverTimeNeeded.Visible = true;
+                    btnCalculate.Enabled = false;
+                }
+                else
+                {
+                    btnAvoidOT.Enabled = true;
+                    btnCalculate.Enabled = true;
+                    lblNoOverTimeNeeded.Visible = false;
+                }
             }
+            int otDoors = totalHours - totalDoors;
+            if (otDoors < 0)
+                otDoors = otDoors * -1;
+
+            if (totalDoors > totalHours)
+                lblOTdoors.Text = "Doors for additonal staff to complete = " + Convert.ToString(otDoors);
+            else
+                lblOTdoors.Visible = false;
         }
 
         private void btnAvoidOT_Click(object sender, EventArgs e)
         {
             //this button needs to add tim/kai/gez (or whatever) and divide up the time left for the doors so that overtime can be avoided
-
             //for now im just going to add all 3
+
+            //make labels active
+            dataGridView2.Visible = true;
+         //   lblOT.Visible = true;
+            lblOTdoors.Visible = true;
+          //  lblOTHours.Visible = true;
+            //lblOTTitle.Visible = true;
 
             using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionStringUser))
             {
@@ -256,7 +304,7 @@ namespace estimatedOvertime
                     hours = hours - remove_hours;
                 } 
 
-                lblOTHours.Text = "spare hours :  " + hours.ToString();
+                lblOTHours.Text = "Total Doors capable of extra staff:  " + hours.ToString();
                 //
                
             }
@@ -266,10 +314,38 @@ namespace estimatedOvertime
             if (otDoors < 0)
                 otDoors = otDoors * -1;
 
-            hoursDivided = (otDoors / 3);
-            lblOTdoors.Text = "Doors needed = " + Convert.ToString(otDoors);
-            MessageBox.Show(hoursDivided.ToString() + " hours each to avoid overtime!");
+            hoursDivided = (otDoors * 2) / 3;
+            lblOTdoors.Text = "Doors for additonal staff to complete = " + Convert.ToString(otDoors);
+            //MessageBox.Show(hoursDivided.ToString() + " hours each to avoid overtime!");
+            lblOT.Text = hoursDivided.ToString() + " hours each to avoid overtime!";
+            lblOT.Visible = true;
 
         }
+
+        private void btnRestart_Click(object sender, EventArgs e)
+        {
+            Application.Restart();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnCalculate_Click(object sender, EventArgs e)
+        {
+            //need to work our how many hours we need to split the boys above to get the number of overtime between them
+
+            //we will use lbltitle for this
+
+            double test = totalDoors - totalHours;
+            test = Math.Round((test / 3),1);
+            lblNoOverTimeNeeded.Text = test.ToString() + " Hours each needed for overtime.";
+            lblNoOverTimeNeeded.Visible = true;
+        }
+
+
+
+
     }
 }
