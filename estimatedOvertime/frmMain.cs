@@ -33,45 +33,6 @@ namespace estimatedOvertime
                     dgStaff.DataSource = dt;
                     conn.Close();
                 }
-                //if (dgStaff.Columns.Contains("Monday-Thursday") == true)
-                //{
-                //    dgStaff.Columns.Remove("Monday-Thursday");
-                //}
-                //if (dgStaff.Columns.Contains("Friday") == true)
-                //{
-                //    dgStaff.Columns.Remove("Friday");
-                //}
-                ////now we need to grab each day that people are off
-                //dgStaff.Columns.Add("Monday-Thursday", "Monday-Thursday");
-                //dgStaff.Columns.Add("Friday", "Friday");
-                //using (SqlConnection conn2 = new SqlConnection(CONNECT.ConnectionString))
-                //{
-                //    foreach (DataGridViewRow row in dgStaff.Rows)
-                //    {
-                //        //mon -thurs
-                //        sql = "SELECT COALESCE(SUM(CASE WHEN DATENAME(DW,date_absent) <>'Friday' THEN 1 ELSE 0 END),0) as [monday-thursday]" +
-                //            " FROM dbo.absent_holidays WHERE date_absent > '" + dteStart.Value.ToString("yyyy-MM-dd") + "' AND date_absent < CAST(DATEADD(day,8,'" + dteEnd.Value.ToString("yyyy-MM-dd") + "') as date) AND staff_id =  " + row.Cells[0].Value.ToString();
-                //        using (SqlCommand cmd = new SqlCommand(sql, conn2))
-                //        {
-                //            conn2.Open();
-                //            int mon_thurs = Convert.ToInt32(cmd.ExecuteScalar());
-                //            conn2.Close();
-                //            row.Cells[2].Value = mon_thurs;
-                //        }
-                //        //friday
-                //        sql = "SELECT COALESCE(SUM(CASE WHEN DATENAME(DW,date_absent) = 'Friday' THEN 1 ELSE 0 END),0) as [monday-thursday]" +
-                //           " FROM dbo.absent_holidays WHERE date_absent >= '" + dteStart.Value.ToString("yyyy-MM-dd") + "' AND date_absent <= CAST(DATEADD(day,8,'" + dteEnd.Value.ToString("yyyy-MM-dd") + "') as date) AND staff_id =  " + row.Cells[0].Value.ToString();
-                //        using (SqlCommand cmd = new SqlCommand(sql, conn2))
-                //        {
-                //            conn2.Open();
-                //            int fri = Convert.ToInt32(cmd.ExecuteScalar());
-                //            conn2.Close();
-                //            row.Cells[3].Value = fri;
-                //        }
-                //    }
-                //}
-
-                //dumb
                 dgStaff.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                 dgStaff.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             }
@@ -79,7 +40,7 @@ namespace estimatedOvertime
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            //wipe dgv
+            //wipe dgv    
 
             if (dgDays.Columns.Contains("Date") == true)
             {
@@ -100,6 +61,10 @@ namespace estimatedOvertime
             if (dgDays.Columns.Contains("OT Needed") == true)
             {
                 dgDays.Columns.Remove("OT Needed");
+            }
+            if (dgDays.Columns.Contains("Added OT") == true)
+            {
+                dgDays.Columns.Remove("Added OT");
             }
 
             dgDays.Columns.Add("Date", "Date");
@@ -267,7 +232,7 @@ namespace estimatedOvertime
                     DateTime tempDate = Convert.ToDateTime(dgDays.Rows[i].Cells[0].Value);
                     using (SqlCommand cmd = new SqlCommand("select dbo.func_work_days('" + tempDate.ToString("yyyy-MM-dd") + "',9)", conn))
                         tempDate = Convert.ToDateTime(cmd.ExecuteScalar());
-                   // MessageBox.Show(tempDate.ToString("yyyy-MM-dd"));
+                    // MessageBox.Show(tempDate.ToString("yyyy-MM-dd"));
                     for (int x = 0; x < dgStaff.Rows.Count; x++)
                     {
                         //work out if its a friday
@@ -308,7 +273,7 @@ namespace estimatedOvertime
             double totalDoors = 0;
             double totalWorkHours = 0;
             double actualTotalDoors = 0;
-            for (int i = 0; i < dgDays.Rows.Count -1;i++)
+            for (int i = 0; i < dgDays.Rows.Count - 1; i++)
             {
                 totalWorkHours = totalWorkHours + Convert.ToDouble(dgDays.Rows[i].Cells[3].Value);
                 totalDoors = Convert.ToDouble(dgDays.Rows[i].Cells[1].Value) + (nonDoorValue * Convert.ToDouble(dgDays.Rows[i].Cells[2].Value));
@@ -318,7 +283,7 @@ namespace estimatedOvertime
                     dgDays.Rows[i].Cells[4].Value = "0";
                     continue;
                 }
-               actualTotalDoors = actualTotalDoors + totalDoors;
+                actualTotalDoors = actualTotalDoors + totalDoors;
                 //this needs to be the X amount of ot not the whole number of doors
                 double otNeeded = 0;
                 otNeeded = totalDoors - Convert.ToDouble(dgDays.Rows[i].Cells[3].Value);
@@ -360,14 +325,53 @@ namespace estimatedOvertime
                 //only working with the ot needed column so thats 4
                 left = Math.Truncate(Convert.ToDouble(dgDays.Rows[i].Cells[4].Value));
                 right = Math.Round(Convert.ToDouble(dgDays.Rows[i].Cells[4].Value) - left, 1);
-                if (left != 0 && right != 0)
+                if (right != 0)
                 {
                     //timr for some sick maths
                     right = right * 60;
-                    
+
                     dgDays.Rows[i].Cells[4].Value = left.ToString() + "." + right.ToString();
                 }
             }
+
+            //check overtime table and see if they have any OT etc
+            addedOT();
+        }
+
+
+
+        private void addedOT()
+        {
+            dgDays.Columns.Add("Added OT", "Added OT");
+            //table = staff overtime
+
+
+            using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
+            {
+                conn.Open();
+                for (int i = 0; i < dgDays.Rows.Count - 1; i++)
+                {
+                    //get the actual work day
+                    DateTime tempDate = Convert.ToDateTime(dgDays.Rows[i].Cells[0].Value);
+                    using (SqlCommand cmd = new SqlCommand("select dbo.func_work_days('" + tempDate.ToString("yyyy-MM-dd") + "',9)", conn))
+                        tempDate = Convert.ToDateTime(cmd.ExecuteScalar());
+
+                    string sql = "SELECT SUM(COALESCE(prior_work_day,0) + COALESCE(post_work_day,0)) as [total OT] FROM dbo.staff_overtime WHERE date = '" + tempDate.ToString("yyyy-MM-dd") + "'";
+
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        var get_data = cmd.ExecuteScalar();
+                        if (get_data != null)
+                            dgDays.Rows[i].Cells[5].Value = Convert.ToString(cmd.ExecuteScalar());
+                        else
+                            dgDays.Rows[i].Cells[5].Value = "";
+
+                    }
+                }
+                conn.Close();
+            }
+
+
 
             format();
         }
@@ -380,14 +384,22 @@ namespace estimatedOvertime
 
         private void format()
         {
+
+            //if there is OT needed mark the row
+            for (int i = 0; i < dgDays.Rows.Count;i++)
+            {
+                if (Convert.ToDouble(dgDays.Rows[i].Cells[4].Value) > 0)
+                    dgDays.Rows[i].DefaultCellStyle.BackColor = Color.CornflowerBlue;
+            }
+
             dgDays.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             dgDays.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             dgDays.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             dgDays.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            dgDays.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-
-
-            
+            dgDays.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dgDays.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgDays.ClearSelection();
+            dgStaff.ClearSelection();
         }
 
     }
