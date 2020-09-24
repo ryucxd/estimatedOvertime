@@ -194,14 +194,14 @@ namespace estimatedOvertime
                         if (exists != null) //if its true
                         {
                             //update
-                            sql = "UPDATE dbo.staff_overtime SET prior_work_day = " + prior.ToString() + ", post_work_day = " + post.ToString() + " " +
+                            sql = "UPDATE dbo.staff_overtime SET prior_work_day = " + prior.ToString() + ", post_work_day = " + post.ToString() + ", dept = 7 " +
                                 "WHERE date = '" + passedDate.ToString("yyyy-MM-dd") + "' AND staff_id = " + dgOverTime.Rows[i].Cells[staffIndex].Value.ToString() ;
                         }
                         else //not true
                         {
                             //insert
-                            sql = "INSERT INTO dbo.staff_overtime (staff_id,prior_work_day,post_work_day,date) " +
-                                "VALUES (" + dgOverTime.Rows[i].Cells[staffIndex].Value.ToString() + "," + prior + "," + post + ",'" + passedDate.ToString("yyyy-MM-dd") + "')";
+                            sql = "INSERT INTO dbo.staff_overtime (staff_id,prior_work_day,post_work_day,date,dept) " +
+                                "VALUES (" + dgOverTime.Rows[i].Cells[staffIndex].Value.ToString() + "," + prior + "," + post + ",'" + passedDate.ToString("yyyy-MM-dd") + "',7)";
                         }
                         using (SqlCommand cmd = new SqlCommand(sql, conn))
                             cmd.ExecuteNonQuery();

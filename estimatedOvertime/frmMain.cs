@@ -400,9 +400,6 @@ namespace estimatedOvertime
             }
         }
 
-
-
-
         private void overTimeNeeded()
         {
             //here we add another column and work out how much OT is actually needed :}
