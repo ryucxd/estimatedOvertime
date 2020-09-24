@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
-using complaintProgramInput;
 
 namespace estimatedOvertime
 {
@@ -62,22 +61,22 @@ namespace estimatedOvertime
             string sql = "";
             //okay so the first direction i want to head in is getting nextweek back on button click
             //and maybedump it into a dgv or something
-            //two strings for the dates (with 10 working days added to them)
+            //two strings for the dates (with 7 working days added to them)
             DateTime startDate;
             DateTime endDate;
 
-            //work out the 10 working day difference here before adding it to the string using func_work_days_plus
+            //work out the 7 working day difference here before adding it to the string using func_work_days_plus
 
             using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
             {
-                sql = "SELECT dbo.func_work_days_plus('" + dteStart.Value.ToString("yyyy-MM-dd") + "', 10)";
+                sql = "SELECT dbo.func_work_days_plus('" + dteStart.Value.ToString("yyyy-MM-dd") + "', 7)";
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
                     conn.Open();
                     startDate = Convert.ToDateTime(cmd.ExecuteScalar());
                     conn.Close();
                 }
-                sql = "SELECT dbo.func_work_days_plus('" + dteEnd.Value.ToString("yyyy-MM-dd") + "', 10)";
+                sql = "SELECT dbo.func_work_days_plus('" + dteEnd.Value.ToString("yyyy-MM-dd") + "', 7)";
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
                     conn.Open();
