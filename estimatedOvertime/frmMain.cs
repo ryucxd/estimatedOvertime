@@ -802,47 +802,16 @@ namespace estimatedOvertime
 
 
             lblFreeHours.Visible = true;
-            if (hoursFree > 0)
-            {
-                if (OTNeeded > 0)
-                {
-                    if ((OTNeeded - hoursFree) < 0)
-                    {
-                        lblTotalOTNeeded.Text = (OTNeeded - hoursFree).ToString() + " Over Time Needed";
-                        lblFreeHours.Text = "No Spare Hours";
-                    }
-                    else
-                    {
-                        lblTotalOTNeeded.Text = "No Over Time Needed";
-                        lblFreeHours.Text = (hoursFree - OTNeeded).ToString() + " Spare Hours";
-                    }
-                }
-                else
-                {
-                    lblTotalOTNeeded.Text = "No Over Time Needed";
-                    lblFreeHours.Text = hoursFree.ToString() + " Spare Hours";
-                }
-            }
-            else
-            {
-                lblFreeHours.Text = "No Spare Hours";
-                if (OTNeeded > 0)
-                    lblTotalOTNeeded.Text = OTNeeded.ToString() + " Over Time Needed";
-                else
-                    lblTotalOTNeeded.Text = "No Over Time Needed";
-            }
 
-            if (OTNeeded > 0)
-                lblTotalOTNeeded.Text = OTNeeded.ToString() + " Hours Over Time Needed";
-            else
-                lblTotalOTNeeded.Text = " No Over Time Needed";
-            if (hoursFree > 0)
-            {
-                lblFreeHours.Text = hoursFree.ToString() + " Hours spare";
-                lblTotalOTNeeded.Text = " No Over Time Needed";
-            }
-            else
-                lblFreeHours.Text = " No Hours spare";
+
+            //maths for these labels...
+            //count the total workhours vs doors so we have an accurate number 
+            //this is pretty important
+            //because currently this just prettymuch does not work 
+            if (hoursFree < 0)
+                hoursFree = 0;
+
+
         }
 
 
@@ -1016,178 +985,7 @@ namespace estimatedOvertime
 
         private void btnForecast_Click(object sender, EventArgs e)
         {
-            //count everything prior to
-            DateTime getDate = DateTime.Today;
-            if (getDate == dteStart.Value)
-            {
-                //this cant be done so cancel it
-                MessageBox.Show("The start date can not be the same as today's date", "ERROR", MessageBoxButtons.OK);
-                return;
-            }
-            if (getDate > dteStart.Value)
-            {
-                MessageBox.Show("The start date can not be less than today's date", "ERROR", MessageBoxButtons.OK);
-                return;
-            }
-
-            //now from here we just count what spare hours we have from getdate() and add it too the total spare hours 
-            //first step will be counting the days between getdate and startdate and working out how mnay hours to add etc
-            //....also going to need to check if any of the boys are absent on that date.........................................................
-            int countDays = (getDate - dteStart.Value).Days;
-            if (countDays < 0)
-                countDays = countDays * -1;
-            // countDays = Math.Round(countDays);
-            MessageBox.Show(countDays.ToString());
-
-            //now we have the number of days between getdate and  the start date
-
-            //start working out the number of hours available
-            double hoursAvailable = 0;
-            double hoursRemove = 0;
-            string sql = "";
-            DateTime tempDate = getDate;
-            using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
-            {
-                for (double i = 0; i < countDays; i++)
-                {
-                    //first check if its a sat/sun and if it is then we skip this iteration
-                    if (tempDate.DayOfWeek == DayOfWeek.Saturday || tempDate.DayOfWeek == DayOfWeek.Sunday)
-                    {
-                        //add a day to tempdate and then move on
-                        tempDate = tempDate.AddDays(1);
-                        continue;
-                    }
-                    for (int x = 0; x < dgStaff.Rows.Count; x++)
-                    {
-                        //work out if its a friday
-                        if (tempDate.DayOfWeek == DayOfWeek.Friday)
-                        {
-                            sql = "SELECT COALESCE(SUM(CASE WHEN DATENAME(DW,date_absent) = 'Friday' THEN 7 ELSE 0 END),0) as [monday-thursday]" +
-                                     " FROM dbo.absent_holidays WHERE date_absent = '" + tempDate.ToString("yyyy-MM-dd") + "' AND staff_id =  " + dgStaff.Rows[x].Cells[0].Value.ToString();
-                            hoursAvailable = hoursAvailable + 7;
-                        }
-                        else //mon - thurs
-                        {
-                            sql = "SELECT COALESCE(SUM(CASE WHEN DATENAME(DW,date_absent) <>'Friday' THEN 8 ELSE 0 END),0) as [monday-thursday]" +
-                                     " FROM dbo.absent_holidays WHERE date_absent = '" + tempDate.ToString("yyyy-MM-dd") + "' AND  staff_id =  " + dgStaff.Rows[x].Cells[0].Value.ToString();
-                            hoursAvailable = hoursAvailable + 8;
-                        }
-
-                        using (SqlCommand cmd = new SqlCommand(sql, conn))
-                        {
-                            conn.Open();
-                            hoursRemove = hoursRemove + Convert.ToInt32(cmd.ExecuteScalar());
-                            conn.Close();
-                        }
-                    }
-                    tempDate = tempDate.AddDays(1);
-                }
-            }
-
-
-            //now we look in provisional
-            using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
-            {
-                conn.Open();
-                tempDate = getDate;
-                DateTime provisionalStartDate;
-                DateTime provisionalEndDate;
-
-
-                //loop through each user and see if they have a provisonal date that matches up to the dgvdate
-                for (int x = 0; x < dgStaff.Rows.Count; x++)
-                {
-                    tempDate = getDate;
-                    //get users provisional dates and such
-                    sql = "SELECT date_start FROM dbo.staff_provisional_absences WHERE staff_id = " + dgStaff.Rows[x].Cells[0].Value.ToString();
-                    using (SqlCommand cmd = new SqlCommand(sql, conn))
-                        provisionalStartDate = Convert.ToDateTime(cmd.ExecuteScalar());
-                    sql = "SELECT date_end FROM dbo.staff_provisional_absences WHERE staff_id = " + dgStaff.Rows[x].Cells[0].Value.ToString();
-                    using (SqlCommand cmd = new SqlCommand(sql, conn))
-                        provisionalEndDate = Convert.ToDateTime(cmd.ExecuteScalar());
-
-                    //count the days between the start and end date of provisional days
-                    double countDaysProv = (provisionalStartDate - provisionalEndDate).Days;
-                    if (countDaysProv < 0)
-                        countDaysProv = countDaysProv * -1;
-
-                    DateTime tempDateProv = provisionalStartDate;
-                    //loop through all of the days 
-                    for (int z = 0; z < countDays; z++)
-                    {
-                        if (tempDateProv == tempDate)
-                        {
-                            if (tempDateProv.DayOfWeek == DayOfWeek.Saturday || tempDateProv.DayOfWeek == DayOfWeek.Sunday)
-                            {
-                                tempDate = tempDate.AddDays(1);
-                                tempDateProv = tempDateProv.AddDays(1);
-                                continue;
-                            }
-                            //check if temp is a friday
-                            if (tempDateProv.DayOfWeek == DayOfWeek.Friday)
-                            {
-                                hoursRemove = hoursRemove + 7;
-                                tempDateProv = tempDateProv.AddDays(1);
-                            }
-                            else
-                            {
-                                hoursRemove = hoursRemove + 8;
-                                tempDateProv = tempDateProv.AddDays(1);
-                            }
-                        }
-
-                        tempDate = tempDate.AddDays(1);
-                    }
-
-                }
-
-                conn.Close();
-            }
-            //loop for that is over now 
-            //assuming that that is right 
-            MessageBox.Show("Hours Available: " + hoursAvailable.ToString());
-            MessageBox.Show("Hours Remove: " + hoursRemove.ToString());
-            hoursAvailable = hoursAvailable - hoursRemove;
-            MessageBox.Show("Spare hours from last week: " + hoursAvailable.ToString());
-
-            //now here we update the labels 8D
-            //hours avail is the total from last week afaik
-
-            lblFreeHours.Text = (Convert.ToDouble(_hoursSpare) + hoursAvailable).ToString() + " Hours Free";
-
-            decimal hoursFree = _hoursSpare + Convert.ToDecimal(hoursAvailable);
-            decimal OTNeeded = _overTimeNeeded;
-
-            if (hoursFree > 0)
-            {
-                if (OTNeeded > 0)
-                {
-                    if ((OTNeeded > hoursFree))
-                    {
-                        lblTotalOTNeeded.Text = (OTNeeded - hoursFree).ToString() + " Over Time Needed";
-                        lblFreeHours.Text = "No Spare Hours";
-                    }
-                    else
-                    {
-                        lblTotalOTNeeded.Text = "No Over Time Needed";
-                        lblFreeHours.Text = (hoursFree - OTNeeded).ToString() + " Spare Hours";
-                    }
-                }
-                else
-                {
-                    lblTotalOTNeeded.Text = "No Over Time Needed";
-                    lblFreeHours.Text = hoursFree.ToString() + " Spare Hours";
-                }
-            }
-            else
-            {
-                lblFreeHours.Text = "No Spare Hours";
-                if (OTNeeded > 0)
-                    lblTotalOTNeeded.Text = OTNeeded.ToString() + " Over Time Needed";
-                else
-                    lblTotalOTNeeded.Text = "No Over Time Needed";
-            }
-
+            //changing the rotation here
         }
     }
 }
