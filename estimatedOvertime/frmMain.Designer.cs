@@ -50,6 +50,7 @@
             this.label8 = new System.Windows.Forms.Label();
             this.btnAddTempDoors = new System.Windows.Forms.Button();
             this.txtTempDoors = new System.Windows.Forms.TextBox();
+            this.btnForecast = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgDays)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgStaff)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgOverTime)).BeginInit();
@@ -299,11 +300,22 @@
             this.txtTempDoors.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtTempDoors_KeyDown);
             this.txtTempDoors.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtTempDoors_KeyPress);
             // 
+            // btnForecast
+            // 
+            this.btnForecast.Location = new System.Drawing.Point(632, 464);
+            this.btnForecast.Name = "btnForecast";
+            this.btnForecast.Size = new System.Drawing.Size(93, 23);
+            this.btnForecast.TabIndex = 29;
+            this.btnForecast.Text = "Forecast";
+            this.btnForecast.UseVisualStyleBackColor = true;
+            this.btnForecast.Click += new System.EventHandler(this.btnForecast_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(805, 510);
+            this.Controls.Add(this.btnForecast);
             this.Controls.Add(this.txtTempDoors);
             this.Controls.Add(this.btnAddTempDoors);
             this.Controls.Add(this.label8);
@@ -362,5 +374,6 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Button btnAddTempDoors;
         private System.Windows.Forms.TextBox txtTempDoors;
+        private System.Windows.Forms.Button btnForecast;
     }
 }
