@@ -25,12 +25,21 @@ namespace estimatedOvertime
         public int workHoursIndex { get; set; }
         public int otNeededIndex { get; set; }
         public int otAddedIndex { get; set; }
-
+        public int forecastIndex { get; set; }
 
         //these props are for label manipulation
         public decimal _hoursSpare { get; set; }
         public decimal _overTimeNeeded { get; set; }
-        public decimal MyProperty { get; set; }
+        public decimal _doors { get; set; }
+        public decimal _nonDoors { get; set; }
+        //-///////////////////////////////////////////
+
+        //blinking method vars
+        public bool _hoursBlinkGreen { get; set; }
+        public bool _otBlinkGreen { get; set; }
+        public bool _otBlinkRed { get; set; }
+        public bool _hoursBlinkRed { get; set; }
+
         public frmMain()
         {
             InitializeComponent();
@@ -71,10 +80,13 @@ namespace estimatedOvertime
             btnAddTempDoors.Enabled = true;
 
             //wipe dgv    
-
             if (dgDays.Columns.Contains("Programming Date") == true)
             {
                 dgDays.Columns.Remove("Programming Date");
+            }
+            if (dgDays.Columns.Contains("Spare Hours") == true)
+            {
+                dgDays.Columns.Remove("Spare Hours");
             }
             if (dgDays.Columns.Contains("Completion Date") == true)
             {
@@ -808,10 +820,96 @@ namespace estimatedOvertime
             //count the total workhours vs doors so we have an accurate number 
             //this is pretty important
             //because currently this just prettymuch does not work 
-            if (hoursFree < 0)
-                hoursFree = 0;
+
+            //im gonna redo the whole thing here rather than make use of the loops we already have above 
+
+            _hoursSpare = 0;
+            _doors = 0;
+            _nonDoors = 0;
+            _overTimeNeeded = 0;
+            for (int i = 0; i < dgDays.Rows.Count; i++)
+            {
+                if (dgDays.Rows[i].Cells[programmingDateIndex].Value.ToString() == "LATES")
+                {
+                    //only add to doors
+                    _doors = _doors + Convert.ToDecimal(dgDays.Rows[i].Cells[doorsIndex].Value); 
+                }
+                else
+                {
+                    _hoursSpare = _hoursSpare + Convert.ToDecimal(dgDays.Rows[i].Cells[workHoursIndex].Value);
+                    _doors = _doors + Convert.ToDecimal(dgDays.Rows[i].Cells[doorsIndex].Value);
+                    _nonDoors = _nonDoors + Convert.ToDecimal(dgDays.Rows[i].Cells[nonDoorsIndex].Value);
+
+                    _overTimeNeeded = _overTimeNeeded + Convert.ToDecimal(dgDays.Rows[i].Cells[otNeededIndex].Value);
+                }
+            }
 
 
+            //add lates here
+
+
+            //to work out how many hours we actually have spare we need to do hours - doors
+            _nonDoors = _nonDoors * Convert.ToDecimal(0.3);
+            _doors = _doors + _nonDoors;
+            decimal tempHoursSpare = _hoursSpare;
+            _hoursSpare = _hoursSpare - _doors;
+
+
+            //while we are here we need to make these flash etcccccc
+            if (_hoursSpare <= 0)
+                lblFreeHours.Text = "No Spare Hours Available";
+            else
+            {
+                lblFreeHours.Text = _hoursSpare + " Spare Hours Available";
+                _hoursBlinkGreen = true;
+                _otBlinkRed = false;
+                hoursBlinkGreen();
+                lblTotalOTNeeded.Text = "No Overtime Needed";
+            }
+
+
+            if (_hoursSpare <= 0) // < 0 after the calculation means we will have more doors than hours :<
+            {
+                _doors = _doors - tempHoursSpare; //this will give the number of doors we need to complete through OT
+                lblTotalOTNeeded.Text = _doors.ToString() + " Over Time Hours Needed";
+                _otBlinkRed = true;
+                _hoursBlinkGreen = false;
+                OTBlinkRed();
+            }
+        }
+
+        //test
+        private async void hoursBlinkGreen()
+        {
+            if (_hoursBlinkGreen == true)
+            {
+                while (true)
+                {
+                    if (_hoursBlinkGreen == false)
+                    {
+                        lblFreeHours.BackColor = Color.Empty;
+                        return;
+                    }
+                    await Task.Delay(500);
+                    lblFreeHours.BackColor = lblFreeHours.BackColor == Color.DarkSeaGreen ? Color.Empty : Color.DarkSeaGreen;
+                }
+            }
+        }
+        private async void OTBlinkRed()
+        {
+            if (_otBlinkRed == true)
+            {
+                while (true)
+                {
+                    if (_otBlinkRed == false)
+                    {
+                        lblTotalOTNeeded.BackColor = Color.Empty;
+                        return;
+                    }
+                    await Task.Delay(500);
+                    lblTotalOTNeeded.BackColor = lblTotalOTNeeded.BackColor == Color.PaleVioletRed ? Color.Empty : Color.PaleVioletRed;
+                }
+            }
         }
 
 
@@ -932,6 +1030,9 @@ namespace estimatedOvertime
             if (dgDays.Columns.Contains("Added OT") == true)
                 otAddedIndex = dgDays.Columns["Added OT"].Index;
 
+            if (dgDays.Columns.Contains("Spare Hours") == true)
+                forecastIndex = dgDays.Columns["Spare Hours"].Index;
+
         }
 
         private void btnAddTempDoors_Click(object sender, EventArgs e)
@@ -985,7 +1086,58 @@ namespace estimatedOvertime
 
         private void btnForecast_Click(object sender, EventArgs e)
         {
-            //changing the rotation here
+            //okay so for this button to fire the start date MUST BE todays date 8D although i think i could do it another way but w/e
+            //first step will be adding the column to the dgv
+            if (dgDays.Columns.Contains("Spare Hours") == true)
+            {
+                dgDays.Columns.Remove("Spare Hours");
+            }
+
+            dgDays.Columns.Add("Spare Hours", "Spare Hours");
+
+            columnIndex();
+
+            //doesnt matter where this is cause we're going to hide it :}
+
+            //next step is to go through each row and count all the work hours and minus the doors off them so we get a postivie or negative number 
+            //if its a negative number then we mark it as OT is needed
+            decimal forecast = 0;
+            decimal OT = 0;
+            for (int i = 0; i < dgDays.Rows.Count - 1;i++)
+            {                                                           //this is (HOURS + OT ADDED) - (DOORS + (NON-DOORS * 0.3))
+                OT = 0;
+                if (dgDays.Rows[i].Cells[otAddedIndex].Value != null)
+                {
+                    if (dgDays.Rows[i].Cells[otAddedIndex].Value.ToString() != "")
+                    {
+                        if (Convert.ToDouble(dgDays.Rows[i].Cells[otAddedIndex].Value) > 0)
+                            OT = Convert.ToDecimal(dgDays.Rows[i].Cells[otAddedIndex].Value);
+                    }
+                }
+                forecast = forecast + ((Convert.ToDecimal(dgDays.Rows[i].Cells[workHoursIndex].Value) + OT) - (Convert.ToDecimal(dgDays.Rows[i].Cells[doorsIndex].Value) + (Convert.ToDecimal(dgDays.Rows[i].Cells[nonDoorsIndex].Value) * Convert.ToDecimal(0.3))));
+                dgDays.Rows[i].Cells[forecastIndex].Value = forecast;
+            }
+
+
+            //now we go for some colouring :}
+            for (int i = 0; i < dgDays.Rows.Count -1;i++)
+            {
+                if (Convert.ToDecimal(dgDays.Rows[i].Cells[forecastIndex].Value) >= 0)
+                    dgDays.Rows[i].DefaultCellStyle.BackColor = Color.DarkSeaGreen;
+                else
+                    dgDays.Rows[i].DefaultCellStyle.BackColor = Color.PaleVioletRed;
+
+                if (dgDays.Rows[i].Cells[otAddedIndex].Value != null)
+                {
+                    if (dgDays.Rows[i].Cells[otAddedIndex].Value.ToString() != "")
+                    {
+                        if (Convert.ToDouble(dgDays.Rows[i].Cells[otAddedIndex].Value) > 0)
+                            dgDays.Rows[i].DefaultCellStyle.BackColor = Color.CornflowerBlue;
+                    }
+                } 
+
+
+            }
         }
     }
 }

@@ -13,7 +13,7 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>S:\Design and Supply CSharp\MiniApps\overtime\</PublishUrl>
+    <PublishUrl>S:\Design and Supply CSharp\MiniApps\New folder\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -23,8 +23,8 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\designsvr1\apps\Design and Supply CSharp\MiniApps\overtime\</InstallUrl>
-    <ApplicationRevision>35</ApplicationRevision>
+    <InstallUrl>\\designsvr1\apps\Design and Supply CSharp\MiniApps\New folder\</InstallUrl>
+    <ApplicationRevision>36</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>

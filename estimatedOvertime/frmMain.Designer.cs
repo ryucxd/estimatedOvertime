@@ -82,7 +82,7 @@
             // 
             // btnSearch
             // 
-            this.btnSearch.Location = new System.Drawing.Point(460, 29);
+            this.btnSearch.Location = new System.Drawing.Point(460, 14);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(108, 23);
             this.btnSearch.TabIndex = 10;
@@ -156,7 +156,7 @@
             // 
             this.lblOTAssigned.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblOTAssigned.AutoSize = true;
-            this.lblOTAssigned.Location = new System.Drawing.Point(629, 408);
+            this.lblOTAssigned.Location = new System.Drawing.Point(629, 471);
             this.lblOTAssigned.Name = "lblOTAssigned";
             this.lblOTAssigned.Size = new System.Drawing.Size(112, 13);
             this.lblOTAssigned.TabIndex = 16;
@@ -247,11 +247,11 @@
             // 
             this.lblFreeHours.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblFreeHours.AutoSize = true;
-            this.lblFreeHours.Location = new System.Drawing.Point(629, 430);
+            this.lblFreeHours.Location = new System.Drawing.Point(629, 408);
             this.lblFreeHours.Name = "lblFreeHours";
-            this.lblFreeHours.Size = new System.Drawing.Size(112, 13);
+            this.lblFreeHours.Size = new System.Drawing.Size(83, 13);
             this.lblFreeHours.TabIndex = 24;
-            this.lblFreeHours.Text = "No Overtime Assigned";
+            this.lblFreeHours.Text = "No Spare Hours";
             // 
             // dgSat
             // 
@@ -302,9 +302,9 @@
             // 
             // btnForecast
             // 
-            this.btnForecast.Location = new System.Drawing.Point(632, 464);
+            this.btnForecast.Location = new System.Drawing.Point(460, 43);
             this.btnForecast.Name = "btnForecast";
-            this.btnForecast.Size = new System.Drawing.Size(93, 23);
+            this.btnForecast.Size = new System.Drawing.Size(108, 23);
             this.btnForecast.TabIndex = 29;
             this.btnForecast.Text = "Forecast";
             this.btnForecast.UseVisualStyleBackColor = true;

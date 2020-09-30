@@ -23,7 +23,8 @@ namespace estimatedOvertime
             {
                 conn.Open();
                 string sql = "SELECT date as [Date] ,prior_work_day as [Prior Work Day],post_work_day as [Post Work Day] FROM dbo.staff_overtime a " +
-                    "LEFT JOIN [user_info].dbo.[user] b ON a.staff_id = b.id WHERE staff_id = " + passedStaffID + " AND date >= '" + startDate + "' AND date <= '" + endDate + "' ORDER BY date asc " ;
+                    "LEFT JOIN [user_info].dbo.[user] b ON a.staff_id = b.id WHERE staff_id = " + passedStaffID + " AND date >= '" + startDate + "' AND date <= '" + endDate + "' " +
+                    " AND (prior_work_day > 0 OR post_work_day > 0) ORDER BY date asc " ;
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
