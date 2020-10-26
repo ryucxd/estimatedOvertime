@@ -170,42 +170,99 @@ namespace estimatedOvertime
             countDays = countDays + 1;
             //start the loop and get the **temp** date var
             DateTime tempDate = startDate;
-            int validation = 0;
+            DateTime tempProgrammingDate = Convert.ToDateTime(dteStart.Value.ToString());
+            int validationTempDate = 0, validationTempProgrammingDate = 0;
             //we also want to have the connection string around the loop so its cleaner to look @
             using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
             {
                 for (double i = 0; i < countDays; i++)
                 {
-                    validation = 0; // 0 = add date           -1 = skip date
-                    //first up is to check if its a holiday
+                    validationTempDate = 0; // 0 = add date           -1 = skip date
+                    validationTempProgrammingDate = 0;
+                    //first up is to check if its a holiday -- for compt date
                     sql = "SELECT id FROM dbo.holidays WHERE holiday = '" + tempDate.ToString("yyyy-MM-dd") + "'";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
                         conn.Open();
                         var getdata = cmd.ExecuteScalar(); //for checking if it returns anything
                         if (getdata != null)
-                            validation = -1;
+                            validationTempDate = -1;
                         else
-                            validation = 0;
+                            validationTempDate = 0;
                         conn.Close();
                     }
-                    //next up is checking if it is a weekend
-                    if (tempDate.DayOfWeek == DayOfWeek.Saturday || tempDate.DayOfWeek == DayOfWeek.Sunday)
-                        validation = -1;
+                    //now we check if there is a holiday for programming date
+                    sql = "SELECT id FROM dbo.holidays WHERE holiday = '" + tempProgrammingDate.ToString("yyyy-MM-dd") + "'";
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        conn.Open();
+                        var getdata = cmd.ExecuteScalar(); //for checking if it returns anything
+                        if (getdata != null)
+                            validationTempProgrammingDate = -1;
+                        else
+                            validationTempProgrammingDate = 0;
+                        conn.Close();
+                    }
 
-                    //now we check if validation has been triggered
-                    if (validation == -1)
+                    //next up is checking if it is a weekend for comp date
+                    if (tempDate.DayOfWeek == DayOfWeek.Saturday || tempDate.DayOfWeek == DayOfWeek.Sunday)
+                        validationTempDate = -1;
+
+                    //next up is checking if it is a weekend for prog date
+                    if (tempProgrammingDate.DayOfWeek == DayOfWeek.Saturday || tempProgrammingDate.DayOfWeek == DayOfWeek.Sunday)
+                        validationTempProgrammingDate = -1;
+
+                    //now we check if validation has been triggered for comp date
+                    if (validationTempDate == -1)
                     {
                         tempDate = tempDate.AddDays(1);
+                        continue;
+                    }
+                    //now we check if validation has been triggered for prog date
+                    if (validationTempProgrammingDate == -1)
+                    {
+                        tempProgrammingDate = tempProgrammingDate.AddDays(1);
                         continue;
                     }
 
                     //ok if we are here then the date is fine and we can add it and move on
                     var index = dgDays.Rows.Add();
-                    dgDays.Rows[index].Cells["Programming Date"].Value = tempDate.ToString("yyyy-MM-dd");
                     dgDays.Rows[index].Cells["Completion Date"].Value = tempDate.ToString("yyyy-MM-dd");
                     tempDate = tempDate.AddDays(1);
                 }
+                //the above loop needs to repeat itself here  but for prog date instead 
+                int row = 0;
+                for (double i = 0; i < countDays; i++)
+                {
+
+                    validationTempProgrammingDate = 0;
+                    sql = "SELECT id FROM dbo.holidays WHERE holiday = '" + tempProgrammingDate.ToString("yyyy-MM-dd") + "'";
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        conn.Open();
+                        var getdata = cmd.ExecuteScalar(); //for checking if it returns anything
+                        if (getdata != null)
+                            validationTempProgrammingDate = -1;
+                        else
+                            validationTempProgrammingDate = 0;
+                        conn.Close();
+                    }
+                    //next up is checking if it is a weekend for prog date
+                    if (tempProgrammingDate.DayOfWeek == DayOfWeek.Saturday || tempProgrammingDate.DayOfWeek == DayOfWeek.Sunday)
+                        validationTempProgrammingDate = -1;
+                     //now we check if validation has been triggered for prog date
+                    if (validationTempProgrammingDate == -1)
+                    {
+                        tempProgrammingDate = tempProgrammingDate.AddDays(1);
+                        continue;
+                    }
+
+                    //ok if we are here then the date is fine and we can add it and move on
+                    dgDays.Rows[row].Cells["Programming Date"].Value = tempProgrammingDate.ToString("yyyy-MM-dd");
+                    tempProgrammingDate = tempProgrammingDate.AddDays(1);
+                    row = row + 1;
+                }
+
                 dgDays.Columns[programmingDateIndex].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                 dgDays.Columns[completionDateIndex].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
 
@@ -247,7 +304,7 @@ namespace estimatedOvertime
                 {
                     sql = "select COUNT(a.ID) from dbo.door a LEFT OUTER JOIN dbo.door_program AS b ON a.id = b.door_id LEFT OUTER JOIN dbo.door_type AS c ON a.door_type_id = c.id WHERE (b.programed_by_id IS NULL) AND (a.status_id = 1 OR a.status_id = 2) " +
                      "AND (c.double_y_n IS NOT  NULL) AND (c.slimline_y_n IS NULL OR c.slimline_y_n = 0) AND (a.date_completion IS NOT NULL) AND(a.door_type_id <> 48) AND (a.door_type_id <> 113) AND (a.order_number <> 'Bridge Street Cut Downs') AND " +
-                     "a.date_completion >= '" + dgDays.Rows[i].Cells[programmingDateIndex].Value.ToString() + "' AND a.date_completion <= '" + dgDays.Rows[i].Cells[programmingDateIndex].Value.ToString() + "'";
+                     "a.date_punch >= '" + dgDays.Rows[i].Cells[programmingDateIndex].Value.ToString() + "' AND a.date_punch <= '" + dgDays.Rows[i].Cells[programmingDateIndex].Value.ToString() + "'";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
                         dgDays.Rows[i].Cells[doorsIndex].Value = Convert.ToString(cmd.ExecuteScalar());
@@ -256,7 +313,7 @@ namespace estimatedOvertime
                     //non doors here xoxo
                     sql = "select COUNT(a.ID) from dbo.door a LEFT OUTER JOIN dbo.door_program AS b ON a.id = b.door_id LEFT OUTER JOIN dbo.door_type AS c ON a.door_type_id = c.id WHERE (b.programed_by_id IS NULL) AND (a.status_id = 1 OR a.status_id = 2) " +
                      "AND (c.double_y_n is  NULL) AND  (c.slimline_y_n IS NULL OR c.slimline_y_n = 0) AND (a.date_completion IS NOT NULL) AND(a.door_type_id <> 48) AND (a.door_type_id <> 113) AND (a.order_number <> 'Bridge Street Cut Downs') AND " +
-                     "a.date_completion >= '" + dgDays.Rows[i].Cells[programmingDateIndex].Value.ToString() + "' AND a.date_completion <= '" + dgDays.Rows[i].Cells[programmingDateIndex].Value.ToString() + "'";
+                     "a.date_punch >= '" + dgDays.Rows[i].Cells[programmingDateIndex].Value.ToString() + "' AND a.date_punch <= '" + dgDays.Rows[i].Cells[programmingDateIndex].Value.ToString() + "'";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
                         dgDays.Rows[i].Cells[nonDoorsIndex].Value = Convert.ToString(cmd.ExecuteScalar());
@@ -265,7 +322,7 @@ namespace estimatedOvertime
                 //and then add the lates ¬
                 sql = "select COUNT(a.ID) from dbo.door a LEFT OUTER JOIN dbo.door_program AS b ON a.id = b.door_id LEFT OUTER JOIN dbo.door_type AS c ON a.door_type_id = c.id WHERE (b.programed_by_id IS NULL) AND (a.status_id = 1 OR a.status_id = 2) " +
                          "AND (c.double_y_n IS NOT  NULL) AND (c.slimline_y_n IS NULL OR c.slimline_y_n = 0) AND (a.date_completion IS NOT NULL) AND(a.door_type_id <> 48) AND (a.door_type_id <> 113) AND (a.order_number <> 'Bridge Street Cut Downs') AND " +
-                         "a.date_completion < '" + startDate7Days.ToString("yyyy-MM-dd") + "'";
+                         "a.date_punch < '" + dteStart.Value.ToString("yyyy-MM-dd") + "'";
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
                     dgDays.Rows[dgDays.Rows.Count - 1].Cells[doorsIndex].Value = Convert.ToString(cmd.ExecuteScalar());
@@ -273,7 +330,7 @@ namespace estimatedOvertime
                 //non door lates
                 sql = "select COUNT(a.ID) from dbo.door a LEFT OUTER JOIN dbo.door_program AS b ON a.id = b.door_id LEFT OUTER JOIN dbo.door_type AS c ON a.door_type_id = c.id WHERE (b.programed_by_id IS NULL) AND (a.status_id = 1 OR a.status_id = 2) " +
                          "AND (c.double_y_n is  NULL) AND (c.slimline_y_n IS NULL OR c.slimline_y_n = 0) AND (a.date_completion IS NOT NULL) AND(a.door_type_id <> 48) AND (a.door_type_id <> 113) AND (a.order_number <> 'Bridge Street Cut Downs') AND " +
-                         "a.date_completion < '" + startDate7Days.ToString("yyyy-MM-dd") + "'";
+                         "a.date_punch < '" + dteStart.Value.ToString("yyyy-MM-dd") + "'";
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
                     dgDays.Rows[dgDays.Rows.Count - 1].Cells[nonDoorsIndex].Value = Convert.ToString(cmd.ExecuteScalar());
@@ -314,10 +371,10 @@ namespace estimatedOvertime
                 {
                     hours = 0;
                     remove = 0;
-                    //need to go back 7 days
+                    //need to go back 7 days  //NO WE DONT
                     DateTime tempDate = Convert.ToDateTime(dgDays.Rows[i].Cells[programmingDateIndex].Value);
-                    using (SqlCommand cmd = new SqlCommand("select dbo.func_work_days('" + tempDate.ToString("yyyy-MM-dd") + "',6)", conn)) //herehere
-                        tempDate = Convert.ToDateTime(cmd.ExecuteScalar());
+                    //using (SqlCommand cmd = new SqlCommand("select dbo.func_work_days('" + tempDate.ToString("yyyy-MM-dd") + "',6)", conn)) //herehere
+                    //    tempDate = Convert.ToDateTime(cmd.ExecuteScalar());
                     // MessageBox.Show(tempDate.ToString("yyyy-MM-dd"));
                     for (int x = 0; x < dgStaff.Rows.Count; x++)
                     {
@@ -376,8 +433,8 @@ namespace estimatedOvertime
                     int hoursCount = Convert.ToInt32(dgDays.Rows[i].Cells[workHoursIndex].Value);
                     DateTime dgvDate = Convert.ToDateTime(dgDays.Rows[i].Cells[programmingDateIndex].Value); //this rows date (although at this point it is completion date so we gotta convert it back in time to get the actual date
                     //convert the date back
-                    using (SqlCommand cmd = new SqlCommand("select dbo.func_work_days('" + dgvDate.ToString("yyyy-MM-dd") + "',6)", conn)) //herehere
-                        dgvDate = Convert.ToDateTime(cmd.ExecuteScalar());
+                    //using (SqlCommand cmd = new SqlCommand("select dbo.func_work_days('" + dgvDate.ToString("yyyy-MM-dd") + "',6)", conn)) //herehere
+                    //    dgvDate = Convert.ToDateTime(cmd.ExecuteScalar());
 
                     //loop through each user and see if they have a provisonal date that matches up to the dgvdate
                     for (int x = 0; x < dgStaff.Rows.Count; x++)
@@ -515,8 +572,8 @@ namespace estimatedOvertime
                 {
                     //get the actual work day
                     DateTime tempDate = Convert.ToDateTime(dgDays.Rows[i].Cells[programmingDateIndex].Value);
-                    using (SqlCommand cmd = new SqlCommand("select dbo.func_work_days('" + tempDate.ToString("yyyy-MM-dd") + "',6)", conn))
-                        tempDate = Convert.ToDateTime(cmd.ExecuteScalar());
+                    //using (SqlCommand cmd = new SqlCommand("select dbo.func_work_days('" + tempDate.ToString("yyyy-MM-dd") + "',6)", conn))
+                    //    tempDate = Convert.ToDateTime(cmd.ExecuteScalar());
 
                     sql = "SELECT SUM(COALESCE(prior_work_day,0) + COALESCE(post_work_day,0)) as [total OT] FROM dbo.staff_overtime WHERE date = '" + tempDate.ToString("yyyy-MM-dd") + "'";
 
@@ -841,7 +898,7 @@ namespace estimatedOvertime
             _doors = 0;
             _nonDoors = 0;
             _overTimeNeeded = 0;
-            for (int i = 0; i < dgDays.Rows.Count; i++)
+            for (int i = 0; i < dgDays.Rows.Count; i++)  //spare hours isnt working for some reason -- doesnt change the day just count
             {
                 if (dgDays.Rows[i].Cells[programmingDateIndex].Value.ToString() == "LATES")
                 {
@@ -853,11 +910,10 @@ namespace estimatedOvertime
                     _hoursSpare = _hoursSpare + Convert.ToDecimal(dgDays.Rows[i].Cells[workHoursIndex].Value);
                     _doors = _doors + Convert.ToDecimal(dgDays.Rows[i].Cells[doorsIndex].Value);
                     _nonDoors = _nonDoors + Convert.ToDecimal(dgDays.Rows[i].Cells[nonDoorsIndex].Value);
-
                     _overTimeNeeded = _overTimeNeeded + Convert.ToDecimal(dgDays.Rows[i].Cells[otNeededIndex].Value);
                 }
             }
-
+            
 
             //add lates here
 
@@ -931,23 +987,23 @@ namespace estimatedOvertime
         {
             //here we are going to go over the dates selected and add them 
             //need to go back 7 days
-            using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
-            {
-                conn.Open();
-                // MessageBox.Show(tempDate.ToString("yyyy-MM-dd"));
-                for (int i = 0; i < dgDays.Rows.Count - 1; i++)
-                {
-                    DateTime tempDate = Convert.ToDateTime(dgDays.Rows[i].Cells[programmingDateIndex].Value);
-                    using (SqlCommand cmd = new SqlCommand("select dbo.func_work_days('" + tempDate.ToString("yyyy-MM-dd") + "',6)", conn)) //herehere
-                        tempDate = Convert.ToDateTime(cmd.ExecuteScalar());
+            //using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
+            //{
+            //    conn.Open();
+            //    // MessageBox.Show(tempDate.ToString("yyyy-MM-dd"));
+            //    for (int i = 0; i < dgDays.Rows.Count - 1; i++)
+            //    {
+            //        DateTime tempDate = Convert.ToDateTime(dgDays.Rows[i].Cells[programmingDateIndex].Value);
+            //        using (SqlCommand cmd = new SqlCommand("select dbo.func_work_days('" + tempDate.ToString("yyyy-MM-dd") + "',6)", conn)) //herehere
+            //            tempDate = Convert.ToDateTime(cmd.ExecuteScalar());
 
-                    dgDays.Rows[i].Cells[programmingDateIndex].Value = tempDate.ToString("yyyy-MM-dd");
+            //        dgDays.Rows[i].Cells[programmingDateIndex].Value = tempDate.ToString("yyyy-MM-dd");
 
-                }
-                conn.Close();
-            }
+            //    }
+            //    conn.Close();
+            //}
 
-        }
+        } //commented out 
 
 
 
