@@ -85,7 +85,6 @@ namespace estimatedOvertime
             using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
             {
                 conn.Open();
-                string sql = "";
                 //for (int i = 0; i  < dgOverTime.Rows.Count - 1;i++)
                 //{
                 //    //prior

@@ -156,7 +156,7 @@
             // 
             this.lblOTAssigned.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblOTAssigned.AutoSize = true;
-            this.lblOTAssigned.Location = new System.Drawing.Point(629, 471);
+            this.lblOTAssigned.Location = new System.Drawing.Point(629, 445);
             this.lblOTAssigned.Name = "lblOTAssigned";
             this.lblOTAssigned.Size = new System.Drawing.Size(112, 13);
             this.lblOTAssigned.TabIndex = 16;
@@ -166,6 +166,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.Color.DarkSeaGreen;
+            this.label3.ForeColor = System.Drawing.Color.Indigo;
             this.label3.Location = new System.Drawing.Point(12, 55);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(125, 13);
@@ -177,6 +178,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.Color.PaleVioletRed;
+            this.label4.ForeColor = System.Drawing.Color.Indigo;
             this.label4.Location = new System.Drawing.Point(161, 55);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(118, 13);
@@ -188,6 +190,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.BackColor = System.Drawing.Color.CornflowerBlue;
+            this.label5.ForeColor = System.Drawing.Color.Indigo;
             this.label5.Location = new System.Drawing.Point(303, 55);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(151, 13);
@@ -302,6 +305,7 @@
             // 
             // btnForecast
             // 
+            this.btnForecast.Enabled = false;
             this.btnForecast.Location = new System.Drawing.Point(460, 43);
             this.btnForecast.Name = "btnForecast";
             this.btnForecast.Size = new System.Drawing.Size(108, 23);
@@ -340,7 +344,7 @@
             this.Controls.Add(this.dteStart);
             this.Name = "frmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "wrd13\'";
+            this.Text = "Estimated Over Time";
             ((System.ComponentModel.ISupportInitialize)(this.dgDays)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgStaff)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgOverTime)).EndInit();

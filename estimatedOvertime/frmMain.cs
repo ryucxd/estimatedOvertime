@@ -33,6 +33,8 @@ namespace estimatedOvertime
         public decimal _doors { get; set; }
         public decimal _nonDoors { get; set; }
         //-///////////////////////////////////////////
+        public int forecastPressed { get; set; }
+        public int forecastOverride { get; set; }
 
         //blinking method vars
         public bool _hoursBlinkGreen { get; set; }
@@ -66,7 +68,12 @@ namespace estimatedOvertime
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
+            if (forecastOverride == -1)
+                forecastOverride = 0;
+            else
+                forecastPressed = 0;
 
+            btnForecast.Enabled = true;
             for (int i = 0; i < dgStaff.Rows.Count; i++)
                 dgStaff.Rows[i].DefaultCellStyle.BackColor = Color.Empty;
 
@@ -156,7 +163,7 @@ namespace estimatedOvertime
             }
             //so from here now we need to add each day into the datagridview
             //best way i can see of doing this is to make a bootleg dbo.func_work_days_plus where i just factor everything into a loop and insert each date
-            double countDays = (startDate - endDate).Days;
+            double countDays = (startDate - endDate).Days;  
             if (countDays < 0)
                 countDays = countDays * -1;
 
@@ -307,7 +314,6 @@ namespace estimatedOvertime
                 {
                     hours = 0;
                     remove = 0;
-                    int provisonalRemove = 0;
                     //need to go back 7 days
                     DateTime tempDate = Convert.ToDateTime(dgDays.Rows[i].Cells[programmingDateIndex].Value);
                     using (SqlCommand cmd = new SqlCommand("select dbo.func_work_days('" + tempDate.ToString("yyyy-MM-dd") + "',6)", conn)) //herehere
@@ -578,6 +584,13 @@ namespace estimatedOvertime
                 col.SortMode = DataGridViewColumnSortMode.NotSortable;
             foreach (DataGridViewColumn col in dgOverTime.Columns)
                 col.SortMode = DataGridViewColumnSortMode.NotSortable;
+
+            //here??
+            if (forecastPressed == -1)
+            {
+                forecastOverride = 0;
+                btnForecast.PerformClick();
+            }
         }
 
         private void dgDays_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -652,6 +665,7 @@ namespace estimatedOvertime
             //    }
             //}
 
+            forecastOverride = -1;
             btnSearch.PerformClick();
 
         }
@@ -917,7 +931,6 @@ namespace estimatedOvertime
         {
             //here we are going to go over the dates selected and add them 
             //need to go back 7 days
-            string sql = "";
             using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
             {
                 conn.Open();
@@ -1003,6 +1016,7 @@ namespace estimatedOvertime
         {
             frmSatProgramming frm = new frmSatProgramming(Convert.ToDateTime(dgSat.Rows[e.RowIndex].Cells[0].Value), 0);
             frm.ShowDialog();
+            forecastOverride = -1;
             btnSearch.PerformClick();
         }
 
@@ -1038,6 +1052,7 @@ namespace estimatedOvertime
         private void btnAddTempDoors_Click(object sender, EventArgs e)
         {
             //all the workings out for this are in overtime();
+            forecastOverride = -1;
             btnSearch.PerformClick();
         }
 
@@ -1072,6 +1087,7 @@ namespace estimatedOvertime
             }
             frmUserOT frm = new frmUserOT(staff_id, dteStart.Value.ToString("yyyy-MM-dd"), dteEnd.Value.ToString("yyyy-MM-dd"));
             frm.ShowDialog();
+            forecastOverride = -1;
             btnSearch.PerformClick();
         }
 
@@ -1080,12 +1096,14 @@ namespace estimatedOvertime
             //needs to open a form to display all the absents etc
             frmUserAbsent frmUA = new frmUserAbsent(Convert.ToInt32(dgStaff.Rows[e.RowIndex].Cells[0].Value), dteStart.Value.ToString("yyyy-MM-dd"), dteEnd.Value.ToString("yyyy-MM-dd"));
             frmUA.ShowDialog();
+            forecastOverride = -1;
             btnSearch.PerformClick();
 
         }
 
         private void btnForecast_Click(object sender, EventArgs e)
         {
+            forecastPressed = -1;
             //okay so for this button to fire the start date MUST BE todays date 8D although i think i could do it another way but w/e
             //first step will be adding the column to the dgv
             if (dgDays.Columns.Contains("Spare Hours") == true)
