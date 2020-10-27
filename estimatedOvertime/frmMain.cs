@@ -15,6 +15,7 @@ namespace estimatedOvertime
     {
         public DateTime startDate7Days { get; set; }
         public DateTime endDate7Days { get; set; }
+        public DateTime testTTTTT { get; set; }
         public double nonDoorValue { get; set; }
 
         //dgv indexs 
@@ -134,148 +135,106 @@ namespace estimatedOvertime
             dgDays.Columns.Add("Programming Date", "Programming Date");
             dgDays.Columns.Add("Completion Date", "Completion Date");
             columnIndex();
-            //lets try and keep this very clean :)
+            //starting this section over again because trying to amend the last one just left me with a million and one errors 
 
-            //first up is going to be working out the dats (adding 7 days) for the start and finish date
-            DateTime startDate;
-            DateTime endDate;
+            DateTime startDate = Convert.ToDateTime(dteStart.Value.ToString());
+            DateTime endDate = Convert.ToDateTime(dteEnd.Value.ToString());
 
-            //work out the 7 working day difference here before adding it to the string using func_work_days_plus
+            //go through each day between these  ^
+            double countDays = (startDate - endDate).Days;
+            if (countDays < 0)
+                countDays = countDays * -1;
+            DateTime tempDate = startDate;
             string sql = "";
             using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
             {
-                sql = "SELECT dbo.func_work_days_plus('" + dteStart.Value.ToString("yyyy-MM-dd") + "', 7)";
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                for (int i = 0; i < countDays + 1; i++)
                 {
-                    conn.Open();
-                    startDate = Convert.ToDateTime(cmd.ExecuteScalar());
-                    startDate7Days = Convert.ToDateTime(cmd.ExecuteScalar());
-                    conn.Close();
-                }
-                sql = "SELECT dbo.func_work_days_plus('" + dteEnd.Value.ToString("yyyy-MM-dd") + "', 7)";
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
-                {
-                    conn.Open();
-                    endDate = Convert.ToDateTime(cmd.ExecuteScalar());
-                    endDate7Days = Convert.ToDateTime(cmd.ExecuteScalar());
-                    conn.Close();
-                }
-            }
-            //so from here now we need to add each day into the datagridview
-            //best way i can see of doing this is to make a bootleg dbo.func_work_days_plus where i just factor everything into a loop and insert each date
-            double countDays = (startDate - endDate).Days;  
-            if (countDays < 0)
-                countDays = countDays * -1;
-
-            countDays = countDays + 1;
-            //start the loop and get the **temp** date var
-            DateTime tempDate = startDate;
-            DateTime tempProgrammingDate = Convert.ToDateTime(dteStart.Value.ToString());
-            int validationTempDate = 0, validationTempProgrammingDate = 0;
-            //we also want to have the connection string around the loop so its cleaner to look @
-            using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
-            {
-                for (double i = 0; i < countDays; i++)
-                {
-                    validationTempDate = 0; // 0 = add date           -1 = skip date
-                    validationTempProgrammingDate = 0;
-                    //first up is to check if its a holiday -- for compt date
+                    //here we check if the current day we are on is a holiday or a weekend 
+                    //check if its a holiday
+                    int validation = 0;
                     sql = "SELECT id FROM dbo.holidays WHERE holiday = '" + tempDate.ToString("yyyy-MM-dd") + "'";
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
                         conn.Open();
                         var getdata = cmd.ExecuteScalar(); //for checking if it returns anything
                         if (getdata != null)
-                            validationTempDate = -1;
+                            validation = -1;
                         else
-                            validationTempDate = 0;
+                            validation = 0;
                         conn.Close();
                     }
-                    //now we check if there is a holiday for programming date
-                    sql = "SELECT id FROM dbo.holidays WHERE holiday = '" + tempProgrammingDate.ToString("yyyy-MM-dd") + "'";
-                    using (SqlCommand cmd = new SqlCommand(sql, conn))
-                    {
-                        conn.Open();
-                        var getdata = cmd.ExecuteScalar(); //for checking if it returns anything
-                        if (getdata != null)
-                            validationTempProgrammingDate = -1;
-                        else
-                            validationTempProgrammingDate = 0;
-                        conn.Close();
-                    }
-
-                    //next up is checking if it is a weekend for comp date
+                    //next we check if its a weekend
                     if (tempDate.DayOfWeek == DayOfWeek.Saturday || tempDate.DayOfWeek == DayOfWeek.Sunday)
-                        validationTempDate = -1;
+                        validation = -1;
 
-                    //next up is checking if it is a weekend for prog date
-                    if (tempProgrammingDate.DayOfWeek == DayOfWeek.Saturday || tempProgrammingDate.DayOfWeek == DayOfWeek.Sunday)
-                        validationTempProgrammingDate = -1;
-
-                    //now we check if validation has been triggered for comp date
-                    if (validationTempDate == -1)
+                    if (validation == -1)
                     {
                         tempDate = tempDate.AddDays(1);
                         continue;
                     }
-                    //now we check if validation has been triggered for prog date
-                    if (validationTempProgrammingDate == -1)
+
+                    //if we made it this far then the days are fine so we can add it
+                    var index = dgDays.Rows.Add();
+                    dgDays.Rows[index].Cells["Programming Date"].Value = tempDate.ToString("yyyy-MM-dd"); //341 is the upper limit for this for some reason???
+                    tempDate = tempDate.AddDays(1);
+
+                }
+
+                //now we have the base days we can go ahead with adding the comp days
+                tempDate = startDate;
+                sql = "SELECT dbo.func_work_days_plus('" + tempDate.ToString("yyyy-MM-dd") + "', 7)"; //here we add 7 days
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    conn.Open();
+                    tempDate = Convert.ToDateTime(cmd.ExecuteScalar());
+                    conn.Close();
+                }
+                foreach (DataGridViewRow row in dgDays.Rows)
+                {//this can fall almost exactly the same as the above, minus the ending where we do not add a new row
+                    int validation = -1;
+                    while (validation == -1)
                     {
-                        tempProgrammingDate = tempProgrammingDate.AddDays(1);
-                        continue;
+                        sql = "SELECT id FROM dbo.holidays WHERE holiday = '" + tempDate.ToString("yyyy-MM-dd") + "'";
+                        using (SqlCommand cmd = new SqlCommand(sql, conn))
+                        {
+                            conn.Open();
+                            var getdata = cmd.ExecuteScalar(); //for checking if it returns anything
+                            if (getdata != null)
+                                validation = -1;
+                            else
+                                validation = 0;
+                            conn.Close();
+                        }
+                        //next we check if its a weekend
+                        if (tempDate.DayOfWeek == DayOfWeek.Saturday || tempDate.DayOfWeek == DayOfWeek.Sunday)
+                            validation = -1;
+
+                        if (validation == -1)
+                            tempDate = tempDate.AddDays(1);
+                        else
+                            validation = 0;
                     }
 
-                    //ok if we are here then the date is fine and we can add it and move on
-                    var index = dgDays.Rows.Add();
-                    dgDays.Rows[index].Cells["Completion Date"].Value = tempDate.ToString("yyyy-MM-dd");
+                    //if we made it this far then the days are fine so we can add it
+                    row.Cells["Completion Date"].Value = tempDate.ToString("yyyy-MM-dd"); //341 is the upper limit for this for some reason???
                     tempDate = tempDate.AddDays(1);
                 }
-                //the above loop needs to repeat itself here  but for prog date instead 
-                int row = 0;
-                for (double i = 0; i < countDays; i++)
-                {
-
-                    validationTempProgrammingDate = 0;
-                    sql = "SELECT id FROM dbo.holidays WHERE holiday = '" + tempProgrammingDate.ToString("yyyy-MM-dd") + "'";
-                    using (SqlCommand cmd = new SqlCommand(sql, conn))
-                    {
-                        conn.Open();
-                        var getdata = cmd.ExecuteScalar(); //for checking if it returns anything
-                        if (getdata != null)
-                            validationTempProgrammingDate = -1;
-                        else
-                            validationTempProgrammingDate = 0;
-                        conn.Close();
-                    }
-                    //next up is checking if it is a weekend for prog date
-                    if (tempProgrammingDate.DayOfWeek == DayOfWeek.Saturday || tempProgrammingDate.DayOfWeek == DayOfWeek.Sunday)
-                        validationTempProgrammingDate = -1;
-                     //now we check if validation has been triggered for prog date
-                    if (validationTempProgrammingDate == -1)
-                    {
-                        tempProgrammingDate = tempProgrammingDate.AddDays(1);
-                        continue;
-                    }
-
-                    //ok if we are here then the date is fine and we can add it and move on
-                    dgDays.Rows[row].Cells["Programming Date"].Value = tempProgrammingDate.ToString("yyyy-MM-dd");
-                    tempProgrammingDate = tempProgrammingDate.AddDays(1);
-                    row = row + 1;
-                }
-
-                dgDays.Columns[programmingDateIndex].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                dgDays.Columns[completionDateIndex].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
 
 
-                //gonna add a column for lates :}
-
-                var late = dgDays.Rows.Add();
-                dgDays.Rows[late].Cells["Programming Date"].Value = "LATES";
-
-                //search has done what it needs to but we need a litttttle more
-                //gonna use another private void 
-                overTime();
             }
+
+
+            //gonna add a column for lates :}
+
+            var late = dgDays.Rows.Add();
+            dgDays.Rows[late].Cells["Programming Date"].Value = "LATES";
+
+            //search has done what it needs to but we need a litttttle more
+            //gonna use another private void 
+
+            overTime();
+
         }
 
         private void overTime()
@@ -397,9 +356,10 @@ namespace estimatedOvertime
                             remove = remove + Convert.ToInt32(cmd.ExecuteScalar());
                             //colour
                             if (Convert.ToInt32(cmd.ExecuteScalar()) > 0)
+                            {
                                 dgStaff.Rows[x].DefaultCellStyle.BackColor = Color.PaleVioletRed;
-
-                            //its either 8/7 or its 0 (0 is current and 8-7 is absent
+                                continue;
+                            }
 
 
 
@@ -415,9 +375,121 @@ namespace estimatedOvertime
             }
             //before going into OT needed we gotta check for provisional dates
             provisionalAbsences();
+            //here maybe?
+            //find out if todays date matches a date in the dgv? (incase they went back a week i guess?
+            DateTime todayTime = DateTime.Now; //this will be just the time
+            DateTime todayDate = DateTime.Today;
+
+            for (int i = 0; i < dgDays.Rows.Count - 1; i++) // -1 to skip the lates cell at the end 
+            {
+                if (Convert.ToDateTime(dgDays.Rows[i].Cells[programmingDateIndex].Value) == todayDate)
+                {
+                    //if we get here then we can just proc the void that handles the current day mechanic and move on
+                    removeTodaysHours();
+                }
+            }
+
             overTimeNeeded();
         }
 
+        private void removeTodaysHours()
+        {
+            //first step i guess is to mark the start and end date
+            DateTime workStart = Convert.ToDateTime("07:30:00");
+            DateTime workEnd;
+            if (DateTime.Today.DayOfWeek == DayOfWeek.Friday)
+                workEnd = Convert.ToDateTime("15:00:00");
+            else
+                workEnd = Convert.ToDateTime("16:00:00");
+
+            DateTime todayTime = DateTime.Now;
+
+            TimeSpan timeSpan = DateTime.Parse(Convert.ToString(workEnd)).Subtract(DateTime.Parse(Convert.ToString(todayTime)));
+            DateTime hoursLeft = Convert.ToDateTime(timeSpan.ToString());
+            hoursLeft = RoundToHour(hoursLeft);
+            //hoursLeft now shows how many 'doors' are left
+            //* this by the number of men in the dept and this is the new  value???
+
+            string sql = "";
+            int staffCount = 0;
+            for (int x = 0; x < dgStaff.Rows.Count; x++)
+            {
+                //work out if its a friday
+                if (todayTime.DayOfWeek == DayOfWeek.Friday)
+                {
+                    sql = "SELECT COALESCE(SUM(CASE WHEN DATENAME(DW,date_absent) = 'Friday' THEN 7 ELSE 0 END),0) as [monday-thursday]" +
+                             " FROM dbo.absent_holidays WHERE date_absent = '" + todayTime.ToString("yyyy-MM-dd") + "' AND staff_id =  " + dgStaff.Rows[x].Cells[0].Value.ToString();
+                }
+                else //mon - thurs
+                {
+                    sql = "SELECT COALESCE(SUM(CASE WHEN DATENAME(DW,date_absent) <>'Friday' THEN 8 ELSE 0 END),0) as [monday-thursday]" +
+                             " FROM dbo.absent_holidays WHERE date_absent = '" + todayTime.ToString("yyyy-MM-dd") + "' AND  staff_id =  " + dgStaff.Rows[x].Cells[0].Value.ToString();
+                }
+
+                using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+
+                        int getData = Convert.ToInt32(cmd.ExecuteScalar());
+                        if (getData == 0) //if its null they are in so we can add to poerson count
+                            staffCount = staffCount + 1;
+
+                        //its either 8/7 or its 0 (0 is current and 8-7 is absent
+                    }
+
+                    //we also need to check if any of them are out during provisional leave and this is going to be a nightmare to work out 
+                    sql = "Select * from dbo.staff_provisional_absences";
+                    DataTable dt = new DataTable();
+                    using (SqlCommand cmd2 = new SqlCommand(sql, conn))
+                    {
+                        SqlDataAdapter da = new SqlDataAdapter(cmd2);
+                        da.Fill(dt);
+                    }
+
+                    //loop through the dt /
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        //get the staff id
+                        int staff_id = Convert.ToInt32(row["staff_id"].ToString());
+                        //now we check this agaisnt the boys
+                        for (int i = 0; i < dgStaff.Rows.Count; i++)
+                        {
+                            if (staff_id == Convert.ToInt32(dgStaff.Rows[i].Cells[0].Value))
+                            {
+                                //there is a match now we grab the start and end check to see if today falls under it 
+                                DateTime startDate = Convert.ToDateTime(row["date_start"].ToString());
+                                DateTime endDate = Convert.ToDateTime(row["date_end"].ToString());
+                                double countDays = (startDate - endDate).Days;
+                                if (countDays < 0)
+                                    countDays = countDays * -1;
+                                for (int counter = 0; counter < countDays; counter++)
+                                {
+                                    if (day)
+                                }
+                            }
+                        }
+                    }
+                    conn.Close();
+                }
+            }
+            //find the dgv although it should be #0
+            foreach (DataGridViewRow row in dgDays.Rows)
+            {
+                if (row.Cells[programmingDateIndex].Value.ToString() == todayTime.ToString("yyyy-MM-dd"))
+                {
+                    row.Cells[workHoursIndex].Value = Convert.ToString(Convert.ToInt32(hoursLeft.Hour) * staffCount);
+                    break;
+                }
+            }
+        }
+
+        static DateTime RoundToHour(DateTime dt) //i dont understand how this works but it just does nice
+        {
+            long ticks = dt.Ticks + 18000000000;
+            return new DateTime(ticks - ticks % 36000000000, dt.Kind);
+        }
 
         private void provisionalAbsences()
         {
@@ -898,22 +970,25 @@ namespace estimatedOvertime
             _doors = 0;
             _nonDoors = 0;
             _overTimeNeeded = 0;
-            for (int i = 0; i < dgDays.Rows.Count; i++)  //spare hours isnt working for some reason -- doesnt change the day just count
-            {
+            for (int i = 0; i < dgDays.Rows.Count; i++)  //need to handle the 'lates' so that it only adds the doors because the rest of the cells are null
+            { //idk about this one chief
                 if (dgDays.Rows[i].Cells[programmingDateIndex].Value.ToString() == "LATES")
                 {
                     //only add to doors
-                    _doors = _doors + Convert.ToDecimal(dgDays.Rows[i].Cells[doorsIndex].Value); 
+                    _doors = _doors + Convert.ToDecimal(dgDays.Rows[i].Cells[doorsIndex].Value);
                 }
                 else
                 {
-                    _hoursSpare = _hoursSpare + Convert.ToDecimal(dgDays.Rows[i].Cells[workHoursIndex].Value);
+                    decimal overtimeAddedTemp = 0;  // the old one was doing something funky with overtime, when it was null it was skipping _nondoors thus making it out by 0.3 etc
+                    if (dgDays.Rows[i].Cells[otAddedIndex].Value.ToString() != "")
+                        overtimeAddedTemp = overtimeAddedTemp + Convert.ToDecimal(dgDays.Rows[i].Cells[otAddedIndex].Value);
+                    _hoursSpare = _hoursSpare + (Convert.ToDecimal(dgDays.Rows[i].Cells[workHoursIndex].Value) + overtimeAddedTemp);
                     _doors = _doors + Convert.ToDecimal(dgDays.Rows[i].Cells[doorsIndex].Value);
                     _nonDoors = _nonDoors + Convert.ToDecimal(dgDays.Rows[i].Cells[nonDoorsIndex].Value);
                     _overTimeNeeded = _overTimeNeeded + Convert.ToDecimal(dgDays.Rows[i].Cells[otNeededIndex].Value);
                 }
             }
-            
+
 
             //add lates here
 
@@ -1177,7 +1252,7 @@ namespace estimatedOvertime
             //if its a negative number then we mark it as OT is needed
             decimal forecast = 0;
             decimal OT = 0;
-            for (int i = 0; i < dgDays.Rows.Count - 1;i++)
+            for (int i = 0; i < dgDays.Rows.Count - 1; i++)
             {                                                           //this is (HOURS + OT ADDED) - (DOORS + (NON-DOORS * 0.3))
                 OT = 0;
                 if (dgDays.Rows[i].Cells[otAddedIndex].Value != null)
@@ -1194,7 +1269,7 @@ namespace estimatedOvertime
 
 
             //now we go for some colouring :}
-            for (int i = 0; i < dgDays.Rows.Count -1;i++)
+            for (int i = 0; i < dgDays.Rows.Count - 1; i++)
             {
                 if (Convert.ToDecimal(dgDays.Rows[i].Cells[forecastIndex].Value) >= 0)
                     dgDays.Rows[i].DefaultCellStyle.BackColor = Color.DarkSeaGreen;
@@ -1208,7 +1283,7 @@ namespace estimatedOvertime
                         if (Convert.ToDouble(dgDays.Rows[i].Cells[otAddedIndex].Value) > 0)
                             dgDays.Rows[i].DefaultCellStyle.BackColor = Color.CornflowerBlue;
                     }
-                } 
+                }
 
 
             }
