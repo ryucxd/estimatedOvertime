@@ -24,7 +24,7 @@ namespace estimatedOvertime
             {
                 conn.Open();
                 string sql = "select b.id AS [ID], b.forename + ' ' + b.surname as [Full Name], a.prior_work_day as [Prior Work Day OT],a.post_work_day as [Post Work Day OT] from dbo.staff_overtime a LEFT JOIN[user_info].dbo.[user] b ON a.staff_id = b.id " +
-                    "WHERE [date] = '" + passedDate.ToString("yyyy-MM-dd") + "' AND b.isEngineer = -1 AND b.id <> 260 AND b.id <> 3 AND b.id <> 29  AND b.id <> 14  Order by forename ASC";
+                    "WHERE [date] = '" + passedDate.ToString("yyyy-MM-dd") + "' AND b.isEngineer = -1 AND a.dept = 7 AND b.id <> 260 AND b.id <> 3 AND b.id <> 29  AND b.id <> 14  Order by forename ASC";
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
                     //use a reader to check if its null real quick
@@ -37,7 +37,7 @@ namespace estimatedOvertime
                     {
                         rdr.Close();
                         //we gotta nsert the date into dbo.staff here
-                        sql = "SELECT id as ID  FROM [user_info].dbo.[user] WHERE isEngineer = -1 AND id <> 260 AND id <> 3 AND id <> 29  AND id <> 14  Order by forename ASC ";
+                        sql = "SELECT id as ID  FROM [user_info].dbo.[user] WHERE isEngineer = -1 AND id <> 260 AND id <> 3 AND id <> 29  AND id <> 14 AND dept = 7 Order by forename ASC ";
                         using (SqlCommand cmd2 = new SqlCommand(sql, conn))
                         {
                             SqlDataAdapter da = new SqlDataAdapter(cmd2);
@@ -57,7 +57,7 @@ namespace estimatedOvertime
                     cmd.Dispose();
                 }
                 sql = "select b.id AS [ID], b.forename + ' ' + b.surname as [Full Name], a.prior_work_day as [Prior Work Day OT],a.post_work_day as [Post Work Day OT] from dbo.staff_overtime a LEFT JOIN[user_info].dbo.[user] b ON a.staff_id = b.id " +
-                    "WHERE [date] = '" + passedDate.ToString("yyyy-MM-dd") + "' AND b.isEngineer = -1 AND b.id <> 260 AND b.id <> 3 AND b.id <> 29  AND b.id <> 14  Order by forename ASC";
+                    "WHERE [date] = '" + passedDate.ToString("yyyy-MM-dd") + "' AND b.isEngineer = -1 AND b.id <> 260 AND b.id <> 3 AND b.id <> 29 AND a.dept = 7  AND b.id <> 14  Order by forename ASC";
                 using (SqlCommand cmd2 = new SqlCommand(sql, conn))
                 {
                     //use a reader to check if its null real quick
@@ -122,7 +122,7 @@ namespace estimatedOvertime
                         {
                             //update
                             sql = "UPDATE dbo.staff_overtime SET prior_work_day = " + prior.ToString() + ", post_work_day = " + post.ToString() + ", dept = 7 " +
-                                "WHERE date = '" + _passedDate.ToString("yyyy-MM-dd") + "' AND staff_id = " + dgOverTime.Rows[i].Cells[staffIndex].Value.ToString();
+                                "WHERE date = '" + _passedDate.ToString("yyyy-MM-dd") + "' AND staff_id = " + dgOverTime.Rows[i].Cells[staffIndex].Value.ToString() + " AND dept = 7";
                         }
                         else //not true
                         {

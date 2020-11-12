@@ -51,10 +51,18 @@
             this.btnAddTempDoors = new System.Windows.Forms.Button();
             this.txtTempDoors = new System.Windows.Forms.TextBox();
             this.btnForecast = new System.Windows.Forms.Button();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.dgvOtherDept = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.dgDays)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgStaff)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgOverTime)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgSat)).BeginInit();
+            this.tabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvOtherDept)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -82,7 +90,7 @@
             // 
             // btnSearch
             // 
-            this.btnSearch.Location = new System.Drawing.Point(460, 14);
+            this.btnSearch.Location = new System.Drawing.Point(460, 22);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(108, 23);
             this.btnSearch.TabIndex = 10;
@@ -100,7 +108,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgDays.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgDays.Location = new System.Drawing.Point(12, 71);
+            this.dgDays.Location = new System.Drawing.Point(6, 32);
             this.dgDays.Name = "dgDays";
             this.dgDays.RowHeadersVisible = false;
             this.dgDays.Size = new System.Drawing.Size(576, 292);
@@ -115,11 +123,11 @@
             this.dgStaff.AllowUserToResizeRows = false;
             this.dgStaff.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.dgStaff.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgStaff.Location = new System.Drawing.Point(603, 71);
+            this.dgStaff.Location = new System.Drawing.Point(601, 32);
             this.dgStaff.Name = "dgStaff";
             this.dgStaff.ReadOnly = true;
             this.dgStaff.RowHeadersVisible = false;
-            this.dgStaff.Size = new System.Drawing.Size(176, 138);
+            this.dgStaff.Size = new System.Drawing.Size(176, 133);
             this.dgStaff.TabIndex = 12;
             this.dgStaff.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgStaff_CellDoubleClick);
             // 
@@ -136,7 +144,7 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(655, 55);
+            this.label2.Location = new System.Drawing.Point(653, 16);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(73, 13);
             this.label2.TabIndex = 14;
@@ -146,7 +154,7 @@
             // 
             this.lblTotalOTNeeded.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTotalOTNeeded.AutoSize = true;
-            this.lblTotalOTNeeded.Location = new System.Drawing.Point(629, 385);
+            this.lblTotalOTNeeded.Location = new System.Drawing.Point(627, 346);
             this.lblTotalOTNeeded.Name = "lblTotalOTNeeded";
             this.lblTotalOTNeeded.Size = new System.Drawing.Size(107, 13);
             this.lblTotalOTNeeded.TabIndex = 15;
@@ -156,7 +164,7 @@
             // 
             this.lblOTAssigned.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblOTAssigned.AutoSize = true;
-            this.lblOTAssigned.Location = new System.Drawing.Point(629, 445);
+            this.lblOTAssigned.Location = new System.Drawing.Point(627, 406);
             this.lblOTAssigned.Name = "lblOTAssigned";
             this.lblOTAssigned.Size = new System.Drawing.Size(112, 13);
             this.lblOTAssigned.TabIndex = 16;
@@ -167,7 +175,7 @@
             this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.Color.DarkSeaGreen;
             this.label3.ForeColor = System.Drawing.Color.Indigo;
-            this.label3.Location = new System.Drawing.Point(12, 55);
+            this.label3.Location = new System.Drawing.Point(7, 16);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(125, 13);
             this.label3.TabIndex = 17;
@@ -179,7 +187,7 @@
             this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.Color.PaleVioletRed;
             this.label4.ForeColor = System.Drawing.Color.Indigo;
-            this.label4.Location = new System.Drawing.Point(161, 55);
+            this.label4.Location = new System.Drawing.Point(156, 16);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(118, 13);
             this.label4.TabIndex = 18;
@@ -191,7 +199,7 @@
             this.label5.AutoSize = true;
             this.label5.BackColor = System.Drawing.Color.CornflowerBlue;
             this.label5.ForeColor = System.Drawing.Color.Indigo;
-            this.label5.Location = new System.Drawing.Point(303, 55);
+            this.label5.Location = new System.Drawing.Point(298, 16);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(151, 13);
             this.label5.TabIndex = 19;
@@ -215,12 +223,12 @@
             this.dgOverTime.AllowUserToResizeRows = false;
             this.dgOverTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.dgOverTime.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgOverTime.Location = new System.Drawing.Point(603, 233);
+            this.dgOverTime.Location = new System.Drawing.Point(601, 194);
             this.dgOverTime.Name = "dgOverTime";
             this.dgOverTime.ReadOnly = true;
             this.dgOverTime.RowHeadersVisible = false;
             this.dgOverTime.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.dgOverTime.Size = new System.Drawing.Size(176, 130);
+            this.dgOverTime.Size = new System.Drawing.Size(176, 125);
             this.dgOverTime.TabIndex = 21;
             this.dgOverTime.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgOverTime_CellContentDoubleClick);
             this.dgOverTime.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgOverTime_CellDoubleClick);
@@ -229,7 +237,7 @@
             // 
             this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(629, 217);
+            this.label7.Location = new System.Drawing.Point(627, 178);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(124, 13);
             this.label7.TabIndex = 22;
@@ -238,7 +246,7 @@
             // btnEmail
             // 
             this.btnEmail.Enabled = false;
-            this.btnEmail.Location = new System.Drawing.Point(574, 29);
+            this.btnEmail.Location = new System.Drawing.Point(574, 22);
             this.btnEmail.Name = "btnEmail";
             this.btnEmail.Size = new System.Drawing.Size(93, 23);
             this.btnEmail.TabIndex = 23;
@@ -250,7 +258,7 @@
             // 
             this.lblFreeHours.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblFreeHours.AutoSize = true;
-            this.lblFreeHours.Location = new System.Drawing.Point(629, 408);
+            this.lblFreeHours.Location = new System.Drawing.Point(627, 369);
             this.lblFreeHours.Name = "lblFreeHours";
             this.lblFreeHours.Size = new System.Drawing.Size(83, 13);
             this.lblFreeHours.TabIndex = 24;
@@ -265,7 +273,7 @@
             this.dgSat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgSat.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgSat.Location = new System.Drawing.Point(12, 385);
+            this.dgSat.Location = new System.Drawing.Point(6, 373);
             this.dgSat.Name = "dgSat";
             this.dgSat.RowHeadersVisible = false;
             this.dgSat.Size = new System.Drawing.Size(577, 113);
@@ -276,12 +284,12 @@
             // 
             this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(182, 369);
+            this.label8.Location = new System.Drawing.Point(6, 341);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(103, 13);
+            this.label8.Size = new System.Drawing.Size(577, 24);
             this.label8.TabIndex = 26;
             this.label8.Text = "Weekend OverTime";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // btnAddTempDoors
             // 
@@ -306,7 +314,7 @@
             // btnForecast
             // 
             this.btnForecast.Enabled = false;
-            this.btnForecast.Location = new System.Drawing.Point(460, 43);
+            this.btnForecast.Location = new System.Drawing.Point(455, 3);
             this.btnForecast.Name = "btnForecast";
             this.btnForecast.Size = new System.Drawing.Size(108, 23);
             this.btnForecast.TabIndex = 29;
@@ -314,30 +322,83 @@
             this.btnForecast.UseVisualStyleBackColor = true;
             this.btnForecast.Click += new System.EventHandler(this.btnForecast_Click);
             // 
+            // tabControl1
+            // 
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Location = new System.Drawing.Point(7, 51);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(804, 519);
+            this.tabControl1.TabIndex = 30;
+            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.dgDays);
+            this.tabPage1.Controls.Add(this.btnForecast);
+            this.tabPage1.Controls.Add(this.dgStaff);
+            this.tabPage1.Controls.Add(this.label2);
+            this.tabPage1.Controls.Add(this.lblTotalOTNeeded);
+            this.tabPage1.Controls.Add(this.label8);
+            this.tabPage1.Controls.Add(this.lblOTAssigned);
+            this.tabPage1.Controls.Add(this.dgSat);
+            this.tabPage1.Controls.Add(this.label3);
+            this.tabPage1.Controls.Add(this.lblFreeHours);
+            this.tabPage1.Controls.Add(this.label4);
+            this.tabPage1.Controls.Add(this.label5);
+            this.tabPage1.Controls.Add(this.label7);
+            this.tabPage1.Controls.Add(this.dgOverTime);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(796, 493);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Programming";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.dgvOtherDept);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(796, 493);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Other Department";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // dgvOtherDept
+            // 
+            this.dgvOtherDept.AllowUserToAddRows = false;
+            this.dgvOtherDept.AllowUserToDeleteRows = false;
+            this.dgvOtherDept.AllowUserToResizeColumns = false;
+            this.dgvOtherDept.AllowUserToResizeRows = false;
+            this.dgvOtherDept.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvOtherDept.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvOtherDept.Location = new System.Drawing.Point(6, 14);
+            this.dgvOtherDept.Name = "dgvOtherDept";
+            this.dgvOtherDept.RowHeadersVisible = false;
+            this.dgvOtherDept.Size = new System.Drawing.Size(784, 473);
+            this.dgvOtherDept.TabIndex = 12;
+            this.dgvOtherDept.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvOtherDept_CellDoubleClick);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(805, 510);
-            this.Controls.Add(this.btnForecast);
+            this.ClientSize = new System.Drawing.Size(818, 582);
+            this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.txtTempDoors);
             this.Controls.Add(this.btnAddTempDoors);
-            this.Controls.Add(this.label8);
-            this.Controls.Add(this.dgSat);
-            this.Controls.Add(this.lblFreeHours);
             this.Controls.Add(this.btnEmail);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.dgOverTime);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.lblOTAssigned);
-            this.Controls.Add(this.lblTotalOTNeeded);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.lblDate);
-            this.Controls.Add(this.dgStaff);
-            this.Controls.Add(this.dgDays);
             this.Controls.Add(this.btnSearch);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.dteEnd);
@@ -349,6 +410,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgStaff)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgOverTime)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgSat)).EndInit();
+            this.tabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvOtherDept)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -379,5 +445,9 @@
         private System.Windows.Forms.Button btnAddTempDoors;
         private System.Windows.Forms.TextBox txtTempDoors;
         private System.Windows.Forms.Button btnForecast;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.DataGridView dgvOtherDept;
     }
 }

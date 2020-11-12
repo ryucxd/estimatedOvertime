@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
+using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace estimatedOvertime
 {
@@ -46,6 +47,7 @@ namespace estimatedOvertime
         public frmMain()
         {
             InitializeComponent();
+            this.WindowState = FormWindowState.Maximized;
             nonDoorValue = 0.3;
             using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionStringUser))
             {
@@ -69,132 +71,92 @@ namespace estimatedOvertime
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            if (forecastOverride == -1)
-                forecastOverride = 0;
-            else
-                forecastPressed = 0;
+            if (tabControl1.SelectedIndex == 0)
+            {
+                if (forecastOverride == -1)
+                    forecastOverride = 0;
+                else
+                    forecastPressed = 0;
 
-            btnForecast.Enabled = true;
-            for (int i = 0; i < dgStaff.Rows.Count; i++)
-                dgStaff.Rows[i].DefaultCellStyle.BackColor = Color.Empty;
+                btnForecast.Enabled = true;
+                for (int i = 0; i < dgStaff.Rows.Count; i++)
+                    dgStaff.Rows[i].DefaultCellStyle.BackColor = Color.Empty;
 
-            //if end is < start then stop
-            if (dteStart.Value > dteEnd.Value)
-            {
-                MessageBox.Show("The START date cannot be higher than the END date");
-                return;
-            }
-            btnEmail.Enabled = true;
-            btnAddTempDoors.Enabled = true;
-
-            //wipe dgv    
-            if (dgDays.Columns.Contains("Programming Date") == true)
-            {
-                dgDays.Columns.Remove("Programming Date");
-            }
-            if (dgDays.Columns.Contains("Spare Hours") == true)
-            {
-                dgDays.Columns.Remove("Spare Hours");
-            }
-            if (dgDays.Columns.Contains("Completion Date") == true)
-            {
-                dgDays.Columns.Remove("Completion Date");
-            }
-            if (dgDays.Columns.Contains("Doors") == true)
-            {
-                dgDays.Columns.Remove("Doors");
-            }
-            if (dgDays.Columns.Contains("Non Doors") == true)
-            {
-                dgDays.Columns.Remove("Non Doors");
-            }
-            if (dgDays.Columns.Contains("Work Hours") == true)
-            {
-                dgDays.Columns.Remove("Work Hours");
-            }
-            if (dgDays.Columns.Contains("OT Needed") == true)
-            {
-                dgDays.Columns.Remove("OT Needed");
-            }
-            if (dgDays.Columns.Contains("Added OT") == true)
-            {
-                dgDays.Columns.Remove("Added OT");
-            }
-            if (dgSat.Columns.Contains("Date") == true)
-            {
-                dgSat.Columns.Remove("Date");
-            }
-            if (dgSat.Columns.Contains("Added OT") == true)
-            {
-                dgSat.Columns.Remove("Added OT");
-            }
-
-
-
-
-            dgDays.Columns.Add("Programming Date", "Programming Date");
-            dgDays.Columns.Add("Completion Date", "Completion Date");
-            columnIndex();
-            //starting this section over again because trying to amend the last one just left me with a million and one errors 
-
-            DateTime startDate = Convert.ToDateTime(dteStart.Value.ToString());
-            DateTime endDate = Convert.ToDateTime(dteEnd.Value.ToString());
-
-            //go through each day between these  ^
-            double countDays = (startDate - endDate).Days;
-            if (countDays < 0)
-                countDays = countDays * -1;
-            DateTime tempDate = startDate;
-            string sql = "";
-            using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
-            {
-                for (int i = 0; i < countDays + 1; i++)
+                //if end is < start then stop
+                if (dteStart.Value > dteEnd.Value)
                 {
-                    //here we check if the current day we are on is a holiday or a weekend 
-                    //check if its a holiday
-                    int validation = 0;
-                    sql = "SELECT id FROM dbo.holidays WHERE holiday = '" + tempDate.ToString("yyyy-MM-dd") + "'";
-                    using (SqlCommand cmd = new SqlCommand(sql, conn))
-                    {
-                        conn.Open();
-                        var getdata = cmd.ExecuteScalar(); //for checking if it returns anything
-                        if (getdata != null)
-                            validation = -1;
-                        else
-                            validation = 0;
-                        conn.Close();
-                    }
-                    //next we check if its a weekend
-                    if (tempDate.DayOfWeek == DayOfWeek.Saturday || tempDate.DayOfWeek == DayOfWeek.Sunday)
-                        validation = -1;
+                    MessageBox.Show("The START date cannot be higher than the END date");
+                    return;
+                }
+                btnEmail.Enabled = true;
+                btnAddTempDoors.Enabled = true;
 
-                    if (validation == -1)
-                    {
-                        tempDate = tempDate.AddDays(1);
-                        continue;
-                    }
-
-                    //if we made it this far then the days are fine so we can add it
-                    var index = dgDays.Rows.Add();
-                    dgDays.Rows[index].Cells["Programming Date"].Value = tempDate.ToString("yyyy-MM-dd"); //341 is the upper limit for this for some reason???
-                    tempDate = tempDate.AddDays(1);
-
+                //wipe dgv    
+                if (dgDays.Columns.Contains("Programming Date") == true)
+                {
+                    dgDays.Columns.Remove("Programming Date");
+                }
+                if (dgDays.Columns.Contains("Spare Hours") == true)
+                {
+                    dgDays.Columns.Remove("Spare Hours");
+                }
+                if (dgDays.Columns.Contains("Completion Date") == true)
+                {
+                    dgDays.Columns.Remove("Completion Date");
+                }
+                if (dgDays.Columns.Contains("Doors") == true)
+                {
+                    dgDays.Columns.Remove("Doors");
+                }
+                if (dgDays.Columns.Contains("Non Doors") == true)
+                {
+                    dgDays.Columns.Remove("Non Doors");
+                }
+                if (dgDays.Columns.Contains("Work Hours") == true)
+                {
+                    dgDays.Columns.Remove("Work Hours");
+                }
+                if (dgDays.Columns.Contains("OT Needed") == true)
+                {
+                    dgDays.Columns.Remove("OT Needed");
+                }
+                if (dgDays.Columns.Contains("Added OT") == true)
+                {
+                    dgDays.Columns.Remove("Added OT");
+                }
+                if (dgSat.Columns.Contains("Date") == true)
+                {
+                    dgSat.Columns.Remove("Date");
+                }
+                if (dgSat.Columns.Contains("Added OT") == true)
+                {
+                    dgSat.Columns.Remove("Added OT");
                 }
 
-                //now we have the base days we can go ahead with adding the comp days
-                tempDate = startDate;
-                sql = "SELECT dbo.func_work_days_plus('" + tempDate.ToString("yyyy-MM-dd") + "', 7)"; //here we add 7 days
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
+
+
+
+                dgDays.Columns.Add("Programming Date", "Programming Date");
+                dgDays.Columns.Add("Completion Date", "Completion Date");
+                columnIndex();
+                //starting this section over again because trying to amend the last one just left me with a million and one errors 
+
+                DateTime startDate = Convert.ToDateTime(dteStart.Value.ToString());
+                DateTime endDate = Convert.ToDateTime(dteEnd.Value.ToString());
+
+                //go through each day between these  ^
+                double countDays = (startDate - endDate).Days;
+                if (countDays < 0)
+                    countDays = countDays * -1;
+                DateTime tempDate = startDate;
+                string sql = "";
+                using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
                 {
-                    conn.Open();
-                    tempDate = Convert.ToDateTime(cmd.ExecuteScalar());
-                    conn.Close();
-                }
-                foreach (DataGridViewRow row in dgDays.Rows)
-                {//this can fall almost exactly the same as the above, minus the ending where we do not add a new row
-                    int validation = -1;
-                    while (validation == -1)
+                    for (int i = 0; i < countDays + 1; i++)
                     {
+                        //here we check if the current day we are on is a holiday or a weekend 
+                        //check if its a holiday
+                        int validation = 0;
                         sql = "SELECT id FROM dbo.holidays WHERE holiday = '" + tempDate.ToString("yyyy-MM-dd") + "'";
                         using (SqlCommand cmd = new SqlCommand(sql, conn))
                         {
@@ -211,30 +173,127 @@ namespace estimatedOvertime
                             validation = -1;
 
                         if (validation == -1)
+                        {
                             tempDate = tempDate.AddDays(1);
-                        else
-                            validation = 0;
+                            continue;
+                        }
+
+                        //if we made it this far then the days are fine so we can add it
+                        var index = dgDays.Rows.Add();
+                        dgDays.Rows[index].Cells["Programming Date"].Value = tempDate.ToString("yyyy-MM-dd"); //341 is the upper limit for this for some reason???
+                        tempDate = tempDate.AddDays(1);
+
                     }
 
-                    //if we made it this far then the days are fine so we can add it
-                    row.Cells["Completion Date"].Value = tempDate.ToString("yyyy-MM-dd"); //341 is the upper limit for this for some reason???
-                    tempDate = tempDate.AddDays(1);
+                    //now we have the base days we can go ahead with adding the comp days
+                    tempDate = startDate;
+                    sql = "SELECT dbo.func_work_days_plus('" + tempDate.ToString("yyyy-MM-dd") + "', 7)"; //here we add 7 days
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        conn.Open();
+                        tempDate = Convert.ToDateTime(cmd.ExecuteScalar());
+                        conn.Close();
+                    }
+                    foreach (DataGridViewRow row in dgDays.Rows)
+                    {//this can fall almost exactly the same as the above, minus the ending where we do not add a new row
+                        int validation = -1;
+                        while (validation == -1)
+                        {
+                            sql = "SELECT id FROM dbo.holidays WHERE holiday = '" + tempDate.ToString("yyyy-MM-dd") + "'";
+                            using (SqlCommand cmd = new SqlCommand(sql, conn))
+                            {
+                                conn.Open();
+                                var getdata = cmd.ExecuteScalar(); //for checking if it returns anything
+                                if (getdata != null)
+                                    validation = -1;
+                                else
+                                    validation = 0;
+                                conn.Close();
+                            }
+                            //next we check if its a weekend
+                            if (tempDate.DayOfWeek == DayOfWeek.Saturday || tempDate.DayOfWeek == DayOfWeek.Sunday)
+                                validation = -1;
+
+                            if (validation == -1)
+                                tempDate = tempDate.AddDays(1);
+                            else
+                                validation = 0;
+                        }
+
+                        //if we made it this far then the days are fine so we can add it
+                        row.Cells["Completion Date"].Value = tempDate.ToString("yyyy-MM-dd"); //341 is the upper limit for this for some reason???
+                        tempDate = tempDate.AddDays(1);
+                    }
+
+
                 }
 
 
+                //gonna add a column for lates :}
+
+                var late = dgDays.Rows.Add();
+                dgDays.Rows[late].Cells["Programming Date"].Value = "LATES";
+
+                //search has done what it needs to but we need a litttttle more
+                //gonna use another private void 
+
+                overTime();
             }
+            else //else its the other dept so we just use this to filter days for other dept overtime
+            {
+                //THE BELOW STRING IS FOR 
+                //string sql = "";
+                DataTable dt = new DataTable();
+                dt.Columns.Add("Date");
+                dt.Columns.Add("Day of Week");
+                dt.Columns.Add("Over Time");
+                //DataRow row2 = dt.NewRow();
+                //dt.Rows.Add(row2);
+                double countDays = (dteStart.Value - dteEnd.Value).Days;
+                if (countDays < 0)
+                    countDays = countDays * -1;
+                DateTime tempDate = dteStart.Value;
+                for (int i = 0; i < countDays + 2; i++)
+                {
+                    DataRow row = dt.NewRow();
+                    dt.Rows.Add(row);
+                    dt.Rows[i][0] = tempDate.ToString("yyyy-MM-dd");
+                    tempDate = tempDate.AddDays(1);
+                   
+                }
 
+                string sql = "";
 
-            //gonna add a column for lates :}
+                using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
+                {
+                    conn.Open();
 
-            var late = dgDays.Rows.Add();
-            dgDays.Rows[late].Cells["Programming Date"].Value = "LATES";
-
-            //search has done what it needs to but we need a litttttle more
-            //gonna use another private void 
-
-            overTime();
-
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        DateTime tempVar = Convert.ToDateTime(dt.Rows[i][0].ToString());
+                        sql = "select sum(COALESCE(prior_work_day,0) + COALESCE(post_work_day,0)) as [OT], DATENAME(dw,'" + tempVar.ToString("yyyy-MM-dd") + "') FROM dbo.staff_overtime WHERE date = '" + tempVar.ToString("yyyy-MM-dd") + "' AND dept <> 7";
+                        using (SqlCommand cmd = new SqlCommand(sql, conn))
+                        {
+                            dt.Rows[i][2] = Convert.ToString(cmd.ExecuteScalar());
+                            if (dt.Rows[i][2].ToString() == "")
+                                dt.Rows[i][2] = "0";
+                            
+                        }
+                        sql = "select DATENAME(dw,'" + tempVar.ToString("yyyy-MM-dd") + "')";
+                        using (SqlCommand cmd = new SqlCommand(sql, conn))
+                        {
+                            dt.Rows[i][1] = Convert.ToString(cmd.ExecuteScalar());
+                        }
+                    }
+                    conn.Close();
+                    dgvOtherDept.DataSource = dt;
+                    foreach (DataGridViewRow row in dgvOtherDept.Rows)
+                    {
+                        if (Convert.ToInt32(row.Cells[2].Value) > 0)
+                            row.DefaultCellStyle.BackColor = Color.DarkSeaGreen;
+                    }   
+                }
+            }
         }
 
         private void overTime()
@@ -466,7 +525,7 @@ namespace estimatedOvertime
                                     countDays = countDays * -1;
                                 for (int counter = 0; counter < countDays; counter++)
                                 {
-                                    if (day)
+                                    //if (day)
                                 }
                             }
                         }
@@ -488,7 +547,7 @@ namespace estimatedOvertime
         static DateTime RoundToHour(DateTime dt) //i dont understand how this works but it just does nice
         {
             long ticks = dt.Ticks + 18000000000;
-            return new DateTime(ticks - ticks % 36000000000, dt.Kind);
+            return new DateTime(ticks - ticks % 36000000000, dt.Kind); //this rounds up only when its 30mins
         }
 
         private void provisionalAbsences()
@@ -647,7 +706,7 @@ namespace estimatedOvertime
                     //using (SqlCommand cmd = new SqlCommand("select dbo.func_work_days('" + tempDate.ToString("yyyy-MM-dd") + "',6)", conn))
                     //    tempDate = Convert.ToDateTime(cmd.ExecuteScalar());
 
-                    sql = "SELECT SUM(COALESCE(prior_work_day,0) + COALESCE(post_work_day,0)) as [total OT] FROM dbo.staff_overtime WHERE date = '" + tempDate.ToString("yyyy-MM-dd") + "'";
+                    sql = "SELECT SUM(COALESCE(prior_work_day,0) + COALESCE(post_work_day,0)) as [total OT] FROM dbo.staff_overtime WHERE date = '" + tempDate.ToString("yyyy-MM-dd") + "' AND dept = 7";
 
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
@@ -668,7 +727,7 @@ namespace estimatedOvertime
             using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
             {
                 sql = " Select max(a.staff_id) as staff_id ,MAX(b.forename + ' ' + b.surname) as [Full Name],sum(a.prior_work_day + a.post_work_day) as [Over Time] From dbo.staff_overtime a  LEFT JOIN[user_info].dbo.[user] b ON a.staff_id = b.id " +
-                    "WHERE(prior_work_day > 0 OR post_work_day > 0) and  date >= '" + dteStart.Value.ToString("yyyy-MM-dd") + "' AND date <= '" + dteEnd.Value.ToString("yyyy-MM-dd") + "' " +
+                    "WHERE(prior_work_day > 0 OR post_work_day > 0) and  date >= '" + dteStart.Value.ToString("yyyy-MM-dd") + "' AND date <= '" + dteEnd.Value.ToString("yyyy-MM-dd") + "' AND dept = 7 " +
                     "group by staff_id";
 
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
@@ -857,7 +916,7 @@ namespace estimatedOvertime
                     //get the actual work day
                     tempDate = Convert.ToDateTime(dgSat.Rows[i].Cells[0].Value);
 
-                    sql = "SELECT SUM(COALESCE(prior_work_day,0) + COALESCE(post_work_day,0)) as [total OT] FROM dbo.staff_overtime WHERE date = '" + tempDate.ToString("yyyy-MM-dd") + "'";
+                    sql = "SELECT SUM(COALESCE(prior_work_day,0) + COALESCE(post_work_day,0)) as [total OT] FROM dbo.staff_overtime WHERE date = '" + tempDate.ToString("yyyy-MM-dd") + "' AND dept = 7 AND staff_id <> 14";
 
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
@@ -1089,58 +1148,100 @@ namespace estimatedOvertime
 
         private void btnEmail_Click(object sender, EventArgs e)
         {
+
+       
             //upload the days dgv to a table and email that bad boy
             //staff_overtime_temp
 
-            using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
+            //if it doesnt exist then make it
+            System.IO.Directory.CreateDirectory(@"C:\temp\");
+
+            //full screen it
+            
+
+
+            //now here we are going to take a screenshot and open it in outlook
+            try
             {
-                conn.Open();
-                //first we need to wipe the table for the previous data
-                string sql = "DELETE FROM dbo.staff_overtime_temp";
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
-                    cmd.ExecuteNonQuery();
-
-                //now we insert
-                for (int i = 0; i < dgDays.Rows.Count; i++)
-                {
-                    double otNeeded = 0;
-                    if (String.IsNullOrEmpty(dgDays.Rows[i].Cells[otNeededIndex].Value.ToString()))
-                        otNeeded = 0.0;
-                    else
-                        otNeeded = Convert.ToInt32(dgDays.Rows[i].Cells[otNeededIndex].Value);
-
-                    int workHours = 0;
-                    if (dgDays.Rows[i].Cells[workHoursIndex].Value?.ToString() == null)
-                        workHours = 0;
-                    else
-                        workHours = Convert.ToInt32(dgDays.Rows[i].Cells[workHoursIndex].Value);
-
-
-                    sql = "INSERT INTO dbo.staff_overtime_temp (date,doors,nonDoors,workHours,otNeeded) VALUES (" +
-                    "'" + dgDays.Rows[i].Cells[programmingDateIndex].Value.ToString() + "'," + //date
-                    "" + dgDays.Rows[i].Cells[doorsIndex].Value.ToString() + "," + //doors
-                    "" + dgDays.Rows[i].Cells[nonDoorsIndex].Value.ToString() + "," +//nonDoors
-                    "" + workHours + "," +//workHours
-                    "" + otNeeded.ToString() + ")"; //otNeeded
-
-                    using (SqlCommand cmd = new SqlCommand(sql, conn))
-                        cmd.ExecuteNonQuery();
-
-                }
-                //usp_email_programming_OT
-                //here we fire the procedure 
-                using (SqlCommand cmd = new SqlCommand("usp_email_programming_OT", conn)
-                { CommandType = System.Data.CommandType.StoredProcedure })
-                {
-                    cmd.Parameters.Add("@startDate", SqlDbType.VarChar).Value = dteStart.Value.ToString("yyyy-MM-dd");
-                    cmd.Parameters.Add("@endDate", SqlDbType.VarChar).Value = dteEnd.Value.ToString("yyyy-MM-dd");
-                    cmd.ExecuteNonQuery();
-                }
-
-                conn.Close();
-                MessageBox.Show("Email Sent", "!", MessageBoxButtons.OK);
-                btnEmail.Enabled = false;
+                System.Drawing.Image bit = new Bitmap(Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height);
+                Graphics gs = Graphics.FromImage(bit);
+                gs.CopyFromScreen(new Point(0, 0), new Point(0, 0), bit.Size);
+                bit.Save(@"C:\temp\temp.jpg");
             }
+            catch
+            {
+            }
+
+            Outlook.Application outlookApp = new Outlook.Application();
+            Outlook.MailItem mailItem = outlookApp.CreateItem(Outlook.OlItemType.olMailItem);
+            mailItem.Subject = "";
+            mailItem.To = "";
+            string imageSrc = @"C:\Temp\temp.jpg"; // Change path as needed
+            var attachments = mailItem.Attachments;
+            var attachment = attachments.Add(imageSrc);
+            attachment.PropertyAccessor.SetProperty("http://schemas.microsoft.com/mapi/proptag/0x370E001F", "image/jpeg");
+            attachment.PropertyAccessor.SetProperty("http://schemas.microsoft.com/mapi/proptag/0x3712001F", "myident"); // Image identifier found in the HTML code right after cid. Can be anything.
+            mailItem.PropertyAccessor.SetProperty("http://schemas.microsoft.com/mapi/id/{00062008-0000-0000-C000-000000000046}/8514000B", true);
+            // Set body format to HTML
+            mailItem.BodyFormat = Outlook.OlBodyFormat.olFormatHTML;
+            string msgHTMLBody = "<html><head></head><body>Hello,<br><br><br><br><img align=\"baseline\" border=\"1\" hspace=\"0\" src=\"cid:myident\" width=\"\" 600=\"\" hold=\" /> \"></img><br><br>Regards,<br></body></html>";
+            mailItem.HTMLBody = msgHTMLBody;
+            mailItem.Display(true);
+
+
+            //everything below here is the old email
+            //it used to dump everything into a temptable and email it off this way 
+            ////------------------------------------------------------------------------------------------------------------
+            //using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
+            //{
+            //    conn.Open();
+            //    //first we need to wipe the table for the previous data
+            //    string sql = "DELETE FROM dbo.staff_overtime_temp";
+            //    using (SqlCommand cmd = new SqlCommand(sql, conn))
+            //        cmd.ExecuteNonQuery();
+
+            //    //now we insert
+            //    for (int i = 0; i < dgDays.Rows.Count; i++)
+            //    {
+            //        double otNeeded = 0;
+            //        if (String.IsNullOrEmpty(dgDays.Rows[i].Cells[otNeededIndex].Value.ToString()))
+            //            otNeeded = 0.0;
+            //        else
+            //            otNeeded = Convert.ToDouble(dgDays.Rows[i].Cells[otNeededIndex].Value);
+
+            //        int workHours = 0;
+            //        if (dgDays.Rows[i].Cells[workHoursIndex].Value?.ToString() == null)
+            //            workHours = 0;
+            //        else
+            //            workHours = Convert.ToInt32(dgDays.Rows[i].Cells[workHoursIndex].Value);
+
+
+            //        sql = "INSERT INTO dbo.staff_overtime_temp (date,doors,nonDoors,workHours,otNeeded) VALUES (" +
+            //        "'" + dgDays.Rows[i].Cells[programmingDateIndex].Value.ToString() + "'," + //date
+            //        "" + dgDays.Rows[i].Cells[doorsIndex].Value.ToString() + "," + //doors
+            //        "" + dgDays.Rows[i].Cells[nonDoorsIndex].Value.ToString() + "," +//nonDoors
+            //        "" + workHours + "," +//workHours
+            //        "" + otNeeded.ToString() + ")"; //otNeeded
+
+            //        using (SqlCommand cmd = new SqlCommand(sql, conn))
+            //            cmd.ExecuteNonQuery();
+
+            //    }
+            //    //usp_email_programming_OT
+            //    //here we fire the procedure 
+            //    using (SqlCommand cmd = new SqlCommand("usp_email_programming_OT", conn)
+            //    { CommandType = System.Data.CommandType.StoredProcedure })
+            //    {
+            //        cmd.Parameters.Add("@startDate", SqlDbType.VarChar).Value = dteStart.Value.ToString("yyyy-MM-dd");
+            //        cmd.Parameters.Add("@endDate", SqlDbType.VarChar).Value = dteEnd.Value.ToString("yyyy-MM-dd");
+            //        cmd.ExecuteNonQuery();
+            //    }
+
+            //    conn.Close();
+            //    MessageBox.Show("Email Sent", "!", MessageBoxButtons.OK);
+            //    btnEmail.Enabled = false;
+            //}
+            ////------------------------------------------------------------------------------------------------------------
         }
 
         private void dgSat_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -1287,6 +1388,34 @@ namespace estimatedOvertime
 
 
             }
+        }
+
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedIndex == 1)
+            {
+                btnEmail.Enabled = false;
+                btnAddTempDoors.Enabled = false;
+                txtTempDoors.Enabled = false;
+            }
+            else
+            {
+                if (dgDays.Rows.Count > 0)
+                {
+                    btnEmail.Enabled = true;
+                    btnAddTempDoors.Enabled = true;
+                    txtTempDoors.Enabled = true;
+                }
+            }
+        }
+
+        private void dgvOtherDept_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            //open form here that lets you enter overtime
+            frmOtherDeptOT frm = new frmOtherDeptOT(Convert.ToDateTime(dgvOtherDept.Rows[e.RowIndex].Cells[0].Value));
+            frm.ShowDialog();
+            btnSearch.PerformClick();
+            dgvOtherDept.ClearSelection();
         }
     }
 }
