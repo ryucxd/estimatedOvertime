@@ -102,7 +102,7 @@ namespace estimatedOvertime
                             dept = 8;
                             break;
                         case 14://kai
-                            dept = 7;
+                            dept = 8; //kai conflicts with mainscreen as a programmer so im putting him as office 
                             break;
                         case 241://Tim
                             dept = 30;
@@ -146,6 +146,15 @@ namespace estimatedOvertime
                 this.Close();
             }
 
+        }
+
+        private void dgOverTime_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void frmOtherDeptOT_FormClosing(object sender, FormClosingEventArgs e)
+        {
         }
     }
 }

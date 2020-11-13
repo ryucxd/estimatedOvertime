@@ -79,6 +79,7 @@
             this.dgOverTime.RowHeadersVisible = false;
             this.dgOverTime.Size = new System.Drawing.Size(288, 227);
             this.dgOverTime.TabIndex = 4;
+            this.dgOverTime.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgOverTime_CellContentClick);
             // 
             // frmOtherDeptOT
             // 
@@ -95,6 +96,7 @@
             this.Name = "frmOtherDeptOT";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "frmOtherDeptOT";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmOtherDeptOT_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.dgOverTime)).EndInit();
             this.ResumeLayout(false);
 

@@ -1407,6 +1407,12 @@ namespace estimatedOvertime
                     txtTempDoors.Enabled = true;
                 }
             }
+
+            //check if the two dates are searchable
+            if (dteStart.Value < dteEnd.Value)
+            {
+                btnSearch.PerformClick(); //shouldnt need anything more than this :}
+            } 
         }
 
         private void dgvOtherDept_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
