@@ -14,11 +14,13 @@ namespace estimatedOvertime
     public partial class frmOtherDeptOT : Form
     {
         public DateTime passedDate { get; set; }
+        public int validation { get; set; }
         public frmOtherDeptOT(DateTime selectedDate)
         {
             InitializeComponent();
             label1.Text = "Insert Over Time for ** " + selectedDate.ToString("yyyy-MM-dd") + " **";
             passedDate = selectedDate;
+            validation = -1;
 
             //load the names
             DataTable dt = new DataTable();
@@ -74,6 +76,7 @@ namespace estimatedOvertime
 
         private void BtnExit_Click(object sender, EventArgs e)
         {
+            validation = -1;
             this.Close();
         }
 
@@ -143,7 +146,8 @@ namespace estimatedOvertime
                     }
                 }
                 conn.Close();
-                this.Close();
+                validation = -1;
+                this.Close();                
             }
 
         }
@@ -155,6 +159,24 @@ namespace estimatedOvertime
 
         private void frmOtherDeptOT_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (validation == 0)
+            {
+                DialogResult result = MessageBox.Show("Do you want to save the Over Time you have entered?", "!!!", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    btnCommit.PerformClick();
+                }
+            }
+        }
+
+        private void dgOverTime_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            
+        }
+
+        private void dgOverTime_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            validation = 0;
         }
     }
 }

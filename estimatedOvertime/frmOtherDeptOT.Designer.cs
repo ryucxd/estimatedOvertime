@@ -80,6 +80,8 @@
             this.dgOverTime.Size = new System.Drawing.Size(288, 227);
             this.dgOverTime.TabIndex = 4;
             this.dgOverTime.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgOverTime_CellContentClick);
+            this.dgOverTime.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgOverTime_CellValueChanged);
+            this.dgOverTime.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dgOverTime_EditingControlShowing);
             // 
             // frmOtherDeptOT
             // 

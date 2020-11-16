@@ -18,8 +18,8 @@ namespace estimatedOvertime
             InitializeComponent();
 
             string sql = " select a.id,d.[NAME], a.date_order as [Order Date],a.date_completion as [Completion Date] from dbo.door a LEFT OUTER JOIN dbo.door_program AS b ON a.id = b.door_id LEFT OUTER JOIN dbo.door_type AS c ON a.door_type_id = c.id " +
-                "LEFT OUTER JOIN dbo.SALES_LEDGER as d ON a.customer_acc_ref = d.ACCOUNT_REF WHERE(b.programed_by_id IS NULL) AND(a.status_id = 1 OR a.status_id = 2) AND(c.double_y_n IS NOT  NULL) AND(c.slimline_y_n IS NULL OR c.slimline_y_n = 0) " +
-                "AND(a.date_completion IS NOT NULL) AND(a.door_type_id <> 48) AND(a.door_type_id <> 113) AND(a.order_number <> 'Bridge Street Cut Downs') AND a.date_completion <  '" + passedDate.ToString("yyyy-MM-dd") + "'";
+                                "LEFT OUTER JOIN dbo.SALES_LEDGER as d ON a.customer_acc_ref = d.ACCOUNT_REF WHERE(b.programed_by_id IS NULL) AND(a.status_id = 1 OR a.status_id = 2) AND(c.double_y_n IS NOT  NULL) AND(c.slimline_y_n IS NULL OR c.slimline_y_n = 0) " +
+                                "AND(a.date_completion IS NOT NULL) AND(a.door_type_id <> 48) AND(a.door_type_id <> 113) AND(a.order_number <> 'Bridge Street Cut Downs') AND a.date_completion <  '" + passedDate.ToString("yyyy-MM-dd") + "'";
 
             using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
             {

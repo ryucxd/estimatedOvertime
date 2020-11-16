@@ -37,8 +37,8 @@ namespace estimatedOvertime
                     {
                         rdr.Close();
                         //we gotta nsert the date into dbo.staff here
-                        sql = "SELECT id as ID  FROM [user_info].dbo.[user] WHERE isEngineer = -1 AND id <> 260 AND id <> 3 AND id <> 29  AND id <> 14 AND dept = 7 Order by forename ASC ";
-                        using (SqlCommand cmd2 = new SqlCommand(sql, conn))
+                        sql = "SELECT distinct  [user_info].dbo.[user].id as ID  FROM [user_info].dbo.[user] LEFT JOIN  dbo.staff_overtime b on b.staff_id = [user_info].dbo.[user].id WHERE isEngineer = -1  AND [user_info].dbo.[user].id <> 3 AND[user_info].dbo.[user].id <> 29  AND[user_info].dbo.[user].id <> 14 AND b.dept = 7  ";
+                            using (SqlCommand cmd2 = new SqlCommand(sql, conn))
                         {
                             SqlDataAdapter da = new SqlDataAdapter(cmd2);
                             DataTable dt = new DataTable();
@@ -46,7 +46,7 @@ namespace estimatedOvertime
                             //MessageBox.Show(dt.Rows.Count.ToString());
                             foreach (DataRow row in dt.Rows)
                             {
-                                sql = "INSERT INTO dbo.staff_overtime (staff_id,[date],prior_work_day,post_work_day) VALUES (" + row["ID"].ToString() + ",'" + passedDate.ToString("yyyy-MM-dd") + "',0,0)";
+                                sql = "INSERT INTO dbo.staff_overtime (staff_id,[date],prior_work_day,post_work_day,dept) VALUES (" + row["ID"].ToString() + ",'" + passedDate.ToString("yyyy-MM-dd") + "',0,0,7)";
                                 using (SqlCommand cmd3 = new SqlCommand(sql, conn))
                                     cmd3.ExecuteNonQuery();
                             }

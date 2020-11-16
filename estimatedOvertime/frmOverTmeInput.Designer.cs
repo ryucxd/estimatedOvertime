@@ -51,12 +51,12 @@
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(77, 11);
+            this.label1.Location = new System.Drawing.Point(12, 11);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(158, 13);
+            this.label1.Size = new System.Drawing.Size(288, 13);
             this.label1.TabIndex = 1;
             this.label1.Text = "Insert OverTime for 20/20/2020";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // btnCommit
             // 
@@ -95,7 +95,6 @@
             this.Text = "Add Programming OverTime";
             ((System.ComponentModel.ISupportInitialize)(this.dgOverTime)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 

@@ -259,7 +259,6 @@ namespace estimatedOvertime
                     dt.Rows.Add(row);
                     dt.Rows[i][0] = tempDate.ToString("yyyy-MM-dd");
                     tempDate = tempDate.AddDays(1);
-                   
                 }
 
                 string sql = "";
@@ -267,7 +266,7 @@ namespace estimatedOvertime
                 using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
                 {
                     conn.Open();
-
+                    //idk about 
                     for (int i = 0; i < dt.Rows.Count; i++)
                     {
                         DateTime tempVar = Convert.ToDateTime(dt.Rows[i][0].ToString());
@@ -277,7 +276,6 @@ namespace estimatedOvertime
                             dt.Rows[i][2] = Convert.ToString(cmd.ExecuteScalar());
                             if (dt.Rows[i][2].ToString() == "")
                                 dt.Rows[i][2] = "0";
-                            
                         }
                         sql = "select DATENAME(dw,'" + tempVar.ToString("yyyy-MM-dd") + "')";
                         using (SqlCommand cmd = new SqlCommand(sql, conn))
@@ -291,7 +289,7 @@ namespace estimatedOvertime
                     {
                         if (Convert.ToInt32(row.Cells[2].Value) > 0)
                             row.DefaultCellStyle.BackColor = Color.DarkSeaGreen;
-                    }   
+                    }
                 }
             }
         }

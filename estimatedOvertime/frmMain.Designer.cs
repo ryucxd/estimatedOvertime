@@ -127,7 +127,7 @@
             this.dgStaff.Name = "dgStaff";
             this.dgStaff.ReadOnly = true;
             this.dgStaff.RowHeadersVisible = false;
-            this.dgStaff.Size = new System.Drawing.Size(176, 133);
+            this.dgStaff.Size = new System.Drawing.Size(176, 142);
             this.dgStaff.TabIndex = 12;
             this.dgStaff.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgStaff_CellDoubleClick);
             // 
@@ -153,22 +153,24 @@
             // lblTotalOTNeeded
             // 
             this.lblTotalOTNeeded.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblTotalOTNeeded.AutoSize = true;
-            this.lblTotalOTNeeded.Location = new System.Drawing.Point(627, 346);
+            this.lblTotalOTNeeded.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblTotalOTNeeded.Location = new System.Drawing.Point(627, 350);
             this.lblTotalOTNeeded.Name = "lblTotalOTNeeded";
-            this.lblTotalOTNeeded.Size = new System.Drawing.Size(107, 13);
+            this.lblTotalOTNeeded.Size = new System.Drawing.Size(112, 15);
             this.lblTotalOTNeeded.TabIndex = 15;
             this.lblTotalOTNeeded.Text = "No Overtime Needed";
+            this.lblTotalOTNeeded.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblOTAssigned
             // 
             this.lblOTAssigned.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblOTAssigned.AutoSize = true;
-            this.lblOTAssigned.Location = new System.Drawing.Point(627, 406);
+            this.lblOTAssigned.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblOTAssigned.Location = new System.Drawing.Point(627, 403);
             this.lblOTAssigned.Name = "lblOTAssigned";
             this.lblOTAssigned.Size = new System.Drawing.Size(112, 13);
             this.lblOTAssigned.TabIndex = 16;
             this.lblOTAssigned.Text = "No Overtime Assigned";
+            this.lblOTAssigned.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label3
             // 
@@ -223,12 +225,12 @@
             this.dgOverTime.AllowUserToResizeRows = false;
             this.dgOverTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.dgOverTime.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgOverTime.Location = new System.Drawing.Point(601, 194);
+            this.dgOverTime.Location = new System.Drawing.Point(601, 198);
             this.dgOverTime.Name = "dgOverTime";
             this.dgOverTime.ReadOnly = true;
             this.dgOverTime.RowHeadersVisible = false;
             this.dgOverTime.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.dgOverTime.Size = new System.Drawing.Size(176, 125);
+            this.dgOverTime.Size = new System.Drawing.Size(176, 134);
             this.dgOverTime.TabIndex = 21;
             this.dgOverTime.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgOverTime_CellContentDoubleClick);
             this.dgOverTime.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgOverTime_CellDoubleClick);
@@ -237,7 +239,7 @@
             // 
             this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(627, 178);
+            this.label7.Location = new System.Drawing.Point(627, 182);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(124, 13);
             this.label7.TabIndex = 22;
@@ -257,12 +259,13 @@
             // lblFreeHours
             // 
             this.lblFreeHours.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblFreeHours.AutoSize = true;
-            this.lblFreeHours.Location = new System.Drawing.Point(627, 369);
+            this.lblFreeHours.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblFreeHours.Location = new System.Drawing.Point(627, 377);
             this.lblFreeHours.Name = "lblFreeHours";
-            this.lblFreeHours.Size = new System.Drawing.Size(83, 13);
+            this.lblFreeHours.Size = new System.Drawing.Size(112, 14);
             this.lblFreeHours.TabIndex = 24;
             this.lblFreeHours.Text = "No Spare Hours";
+            this.lblFreeHours.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // dgSat
             // 
