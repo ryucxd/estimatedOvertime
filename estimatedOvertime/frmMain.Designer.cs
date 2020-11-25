@@ -55,6 +55,8 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.dgvOtherDept = new System.Windows.Forms.DataGridView();
+            this.label = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgDays)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgStaff)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgOverTime)).BeginInit();
@@ -68,7 +70,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(221, 32);
+            this.label1.Location = new System.Drawing.Point(221, 37);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(23, 13);
             this.label1.TabIndex = 9;
@@ -76,25 +78,25 @@
             // 
             // dteEnd
             // 
-            this.dteEnd.Location = new System.Drawing.Point(254, 28);
+            this.dteEnd.Location = new System.Drawing.Point(254, 33);
             this.dteEnd.Name = "dteEnd";
             this.dteEnd.Size = new System.Drawing.Size(200, 20);
             this.dteEnd.TabIndex = 8;
             // 
             // dteStart
             // 
-            this.dteStart.Location = new System.Drawing.Point(12, 28);
+            this.dteStart.Location = new System.Drawing.Point(12, 33);
             this.dteStart.Name = "dteStart";
             this.dteStart.Size = new System.Drawing.Size(200, 20);
             this.dteStart.TabIndex = 7;
             // 
             // btnSearch
             // 
-            this.btnSearch.Location = new System.Drawing.Point(460, 22);
+            this.btnSearch.Location = new System.Drawing.Point(460, 30);
             this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(108, 23);
+            this.btnSearch.Size = new System.Drawing.Size(119, 23);
             this.btnSearch.TabIndex = 10;
-            this.btnSearch.Text = "Search";
+            this.btnSearch.Text = "Search ";
             this.btnSearch.UseVisualStyleBackColor = true;
             this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
@@ -111,7 +113,7 @@
             this.dgDays.Location = new System.Drawing.Point(6, 32);
             this.dgDays.Name = "dgDays";
             this.dgDays.RowHeadersVisible = false;
-            this.dgDays.Size = new System.Drawing.Size(576, 292);
+            this.dgDays.Size = new System.Drawing.Size(576, 316);
             this.dgDays.TabIndex = 11;
             this.dgDays.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgDays_CellDoubleClick);
             // 
@@ -133,30 +135,33 @@
             // 
             // lblDate
             // 
-            this.lblDate.AutoSize = true;
-            this.lblDate.Location = new System.Drawing.Point(53, 12);
+            this.lblDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDate.Location = new System.Drawing.Point(12, 9);
             this.lblDate.Name = "lblDate";
-            this.lblDate.Size = new System.Drawing.Size(119, 13);
+            this.lblDate.Size = new System.Drawing.Size(200, 20);
             this.lblDate.TabIndex = 13;
             this.lblDate.Text = "Programming Start Date";
+            this.lblDate.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label2
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(653, 16);
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(628, 11);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(73, 13);
+            this.label2.Size = new System.Drawing.Size(123, 20);
             this.label2.TabIndex = 14;
             this.label2.Text = "Available staff";
             // 
             // lblTotalOTNeeded
             // 
             this.lblTotalOTNeeded.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblTotalOTNeeded.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTotalOTNeeded.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblTotalOTNeeded.Location = new System.Drawing.Point(627, 350);
+            this.lblTotalOTNeeded.Location = new System.Drawing.Point(589, 389);
             this.lblTotalOTNeeded.Name = "lblTotalOTNeeded";
-            this.lblTotalOTNeeded.Size = new System.Drawing.Size(112, 15);
+            this.lblTotalOTNeeded.Size = new System.Drawing.Size(193, 26);
             this.lblTotalOTNeeded.TabIndex = 15;
             this.lblTotalOTNeeded.Text = "No Overtime Needed";
             this.lblTotalOTNeeded.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -164,10 +169,11 @@
             // lblOTAssigned
             // 
             this.lblOTAssigned.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblOTAssigned.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblOTAssigned.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblOTAssigned.Location = new System.Drawing.Point(627, 403);
+            this.lblOTAssigned.Location = new System.Drawing.Point(589, 475);
             this.lblOTAssigned.Name = "lblOTAssigned";
-            this.lblOTAssigned.Size = new System.Drawing.Size(112, 13);
+            this.lblOTAssigned.Size = new System.Drawing.Size(193, 26);
             this.lblOTAssigned.TabIndex = 16;
             this.lblOTAssigned.Text = "No Overtime Assigned";
             this.lblOTAssigned.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -176,10 +182,11 @@
             // 
             this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.Color.DarkSeaGreen;
-            this.label3.ForeColor = System.Drawing.Color.Indigo;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label3.Location = new System.Drawing.Point(7, 16);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(125, 13);
+            this.label3.Size = new System.Drawing.Size(141, 15);
             this.label3.TabIndex = 17;
             this.label3.Text = "   = No Overtime Needed";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -188,10 +195,11 @@
             // 
             this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.Color.PaleVioletRed;
-            this.label4.ForeColor = System.Drawing.Color.Indigo;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label4.Location = new System.Drawing.Point(156, 16);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(118, 13);
+            this.label4.Size = new System.Drawing.Size(134, 15);
             this.label4.TabIndex = 18;
             this.label4.Text = "   = Overtime is Needed";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -200,22 +208,24 @@
             // 
             this.label5.AutoSize = true;
             this.label5.BackColor = System.Drawing.Color.CornflowerBlue;
-            this.label5.ForeColor = System.Drawing.Color.Indigo;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label5.Location = new System.Drawing.Point(298, 16);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(151, 13);
+            this.label5.Size = new System.Drawing.Size(170, 15);
             this.label5.TabIndex = 19;
             this.label5.Text = "   = Overtime Has Been Added";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(296, 12);
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(254, 9);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(116, 13);
+            this.label6.Size = new System.Drawing.Size(200, 20);
             this.label6.TabIndex = 20;
             this.label6.Text = "Programming End Date";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // dgOverTime
             // 
@@ -225,7 +235,7 @@
             this.dgOverTime.AllowUserToResizeRows = false;
             this.dgOverTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.dgOverTime.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgOverTime.Location = new System.Drawing.Point(601, 198);
+            this.dgOverTime.Location = new System.Drawing.Point(601, 214);
             this.dgOverTime.Name = "dgOverTime";
             this.dgOverTime.ReadOnly = true;
             this.dgOverTime.RowHeadersVisible = false;
@@ -239,30 +249,32 @@
             // 
             this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(627, 182);
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(586, 191);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(124, 13);
+            this.label7.Size = new System.Drawing.Size(204, 20);
             this.label7.TabIndex = 22;
             this.label7.Text = "Staff Working Over Time";
             // 
             // btnEmail
             // 
             this.btnEmail.Enabled = false;
-            this.btnEmail.Location = new System.Drawing.Point(574, 22);
+            this.btnEmail.Location = new System.Drawing.Point(586, 30);
             this.btnEmail.Name = "btnEmail";
-            this.btnEmail.Size = new System.Drawing.Size(93, 23);
+            this.btnEmail.Size = new System.Drawing.Size(120, 23);
             this.btnEmail.TabIndex = 23;
-            this.btnEmail.Text = "Email";
+            this.btnEmail.Text = "Send Email";
             this.btnEmail.UseVisualStyleBackColor = true;
             this.btnEmail.Click += new System.EventHandler(this.btnEmail_Click);
             // 
             // lblFreeHours
             // 
             this.lblFreeHours.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblFreeHours.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblFreeHours.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblFreeHours.Location = new System.Drawing.Point(627, 377);
+            this.lblFreeHours.Location = new System.Drawing.Point(589, 432);
             this.lblFreeHours.Name = "lblFreeHours";
-            this.lblFreeHours.Size = new System.Drawing.Size(112, 14);
+            this.lblFreeHours.Size = new System.Drawing.Size(193, 26);
             this.lblFreeHours.TabIndex = 24;
             this.lblFreeHours.Text = "No Spare Hours";
             this.lblFreeHours.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -276,7 +288,7 @@
             this.dgSat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgSat.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgSat.Location = new System.Drawing.Point(6, 373);
+            this.dgSat.Location = new System.Drawing.Point(6, 389);
             this.dgSat.Name = "dgSat";
             this.dgSat.RowHeadersVisible = false;
             this.dgSat.Size = new System.Drawing.Size(577, 113);
@@ -287,7 +299,8 @@
             // 
             this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label8.Location = new System.Drawing.Point(6, 341);
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(6, 362);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(577, 24);
             this.label8.TabIndex = 26;
@@ -297,7 +310,7 @@
             // btnAddTempDoors
             // 
             this.btnAddTempDoors.Enabled = false;
-            this.btnAddTempDoors.Location = new System.Drawing.Point(673, 29);
+            this.btnAddTempDoors.Location = new System.Drawing.Point(585, 78);
             this.btnAddTempDoors.Name = "btnAddTempDoors";
             this.btnAddTempDoors.Size = new System.Drawing.Size(120, 23);
             this.btnAddTempDoors.TabIndex = 27;
@@ -307,7 +320,7 @@
             // 
             // txtTempDoors
             // 
-            this.txtTempDoors.Location = new System.Drawing.Point(673, 5);
+            this.txtTempDoors.Location = new System.Drawing.Point(459, 80);
             this.txtTempDoors.Name = "txtTempDoors";
             this.txtTempDoors.Size = new System.Drawing.Size(120, 20);
             this.txtTempDoors.TabIndex = 28;
@@ -317,7 +330,7 @@
             // btnForecast
             // 
             this.btnForecast.Enabled = false;
-            this.btnForecast.Location = new System.Drawing.Point(455, 3);
+            this.btnForecast.Location = new System.Drawing.Point(474, 8);
             this.btnForecast.Name = "btnForecast";
             this.btnForecast.Size = new System.Drawing.Size(108, 23);
             this.btnForecast.TabIndex = 29;
@@ -332,10 +345,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(12, 51);
+            this.tabControl1.Location = new System.Drawing.Point(12, 101);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(804, 519);
+            this.tabControl1.Size = new System.Drawing.Size(804, 535);
             this.tabControl1.TabIndex = 30;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -358,7 +371,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(796, 493);
+            this.tabPage1.Size = new System.Drawing.Size(796, 509);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Programming";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -391,11 +404,33 @@
             this.dgvOtherDept.TabIndex = 12;
             this.dgvOtherDept.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvOtherDept_CellDoubleClick);
             // 
+            // label
+            // 
+            this.label.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label.Location = new System.Drawing.Point(12, 77);
+            this.label.Name = "label";
+            this.label.Size = new System.Drawing.Size(200, 23);
+            this.label.TabIndex = 31;
+            this.label.Text = "Select Department";
+            this.label.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            // 
+            // label9
+            // 
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(459, 57);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(336, 20);
+            this.label9.TabIndex = 32;
+            this.label9.Text = "Provisionally add doors evenly across the days added";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(818, 582);
+            this.ClientSize = new System.Drawing.Size(818, 648);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.label);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.txtTempDoors);
             this.Controls.Add(this.btnAddTempDoors);
@@ -452,5 +487,7 @@
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.DataGridView dgvOtherDept;
+        private System.Windows.Forms.Label label;
+        private System.Windows.Forms.Label label9;
     }
 }
