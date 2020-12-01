@@ -806,8 +806,15 @@ namespace estimatedOvertime
 
                 conn.Close();
             }
-            frmOverTmeInput frm = new frmOverTmeInput(Convert.ToDateTime(tempDate));
+            //                       commenting this out while testing the new form
+            /////////////////////////////////////////////////////////////////////////////////////
+            //frmOverTmeInput frm = new frmOverTmeInput(Convert.ToDateTime(tempDate));
+            //frm.ShowDialog();
+            /////////////////////////////////////////////////////////////////////////////////////
+
+            frmOverTimeNew frm = new frmOverTimeNew(tempDate);
             frm.ShowDialog();
+
             //}
             //else //yes was pressed
             //{

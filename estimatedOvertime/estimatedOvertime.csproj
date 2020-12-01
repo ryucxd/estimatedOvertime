@@ -103,6 +103,12 @@
     <Compile Include="frmOtherDeptOT.Designer.cs">
       <DependentUpon>frmOtherDeptOT.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmOverTimeNew.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmOverTimeNew.Designer.cs">
+      <DependentUpon>frmOverTimeNew.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmOverTmeInput.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -152,6 +158,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmOtherDeptOT.resx">
       <DependentUpon>frmOtherDeptOT.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmOverTimeNew.resx">
+      <DependentUpon>frmOverTimeNew.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmOverTmeInput.resx">
       <DependentUpon>frmOverTmeInput.cs</DependentUpon>
