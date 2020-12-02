@@ -116,7 +116,6 @@ namespace estimatedOvertime
                         default:
                             dept = 27; //default the estimating boys 
                             break;
-
                     }
 
                     //first we gotta check if there is data here

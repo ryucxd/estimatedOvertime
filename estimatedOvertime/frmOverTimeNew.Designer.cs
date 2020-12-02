@@ -28,17 +28,20 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.BtnExit = new System.Windows.Forms.Button();
             this.btnCommit = new System.Windows.Forms.Button();
             this.dgOverTime = new System.Windows.Forms.DataGridView();
+            this.dgOther = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.dgOverTime)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgOther)).BeginInit();
             this.SuspendLayout();
             // 
             // BtnExit
             // 
             this.BtnExit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.BtnExit.Location = new System.Drawing.Point(536, 617);
+            this.BtnExit.Location = new System.Drawing.Point(540, 586);
             this.BtnExit.Name = "BtnExit";
             this.BtnExit.Size = new System.Drawing.Size(83, 23);
             this.BtnExit.TabIndex = 7;
@@ -49,7 +52,7 @@
             // btnCommit
             // 
             this.btnCommit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCommit.Location = new System.Drawing.Point(653, 617);
+            this.btnCommit.Location = new System.Drawing.Point(657, 586);
             this.btnCommit.Name = "btnCommit";
             this.btnCommit.Size = new System.Drawing.Size(83, 23);
             this.btnCommit.TabIndex = 6;
@@ -67,6 +70,30 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgOverTime.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgOverTime.DefaultCellStyle = dataGridViewCellStyle1;
+            this.dgOverTime.Location = new System.Drawing.Point(12, 34);
+            this.dgOverTime.Name = "dgOverTime";
+            this.dgOverTime.RowHeadersVisible = false;
+            this.dgOverTime.Size = new System.Drawing.Size(1245, 255);
+            this.dgOverTime.TabIndex = 4;
+            // 
+            // dgOther
+            // 
+            this.dgOther.AllowUserToAddRows = false;
+            this.dgOther.AllowUserToDeleteRows = false;
+            this.dgOther.AllowUserToResizeColumns = false;
+            this.dgOther.AllowUserToResizeRows = false;
+            this.dgOther.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgOther.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -74,18 +101,19 @@
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgOverTime.DefaultCellStyle = dataGridViewCellStyle2;
-            this.dgOverTime.Location = new System.Drawing.Point(12, 34);
-            this.dgOverTime.Name = "dgOverTime";
-            this.dgOverTime.RowHeadersVisible = false;
-            this.dgOverTime.Size = new System.Drawing.Size(1245, 577);
-            this.dgOverTime.TabIndex = 4;
+            this.dgOther.DefaultCellStyle = dataGridViewCellStyle2;
+            this.dgOther.Location = new System.Drawing.Point(12, 323);
+            this.dgOther.Name = "dgOther";
+            this.dgOther.RowHeadersVisible = false;
+            this.dgOther.Size = new System.Drawing.Size(1245, 255);
+            this.dgOther.TabIndex = 8;
             // 
             // frmOverTimeNew
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1269, 649);
+            this.ClientSize = new System.Drawing.Size(1269, 621);
+            this.Controls.Add(this.dgOther);
             this.Controls.Add(this.BtnExit);
             this.Controls.Add(this.btnCommit);
             this.Controls.Add(this.dgOverTime);
@@ -95,6 +123,7 @@
             this.Text = "frmOverTimeNew";
             this.Shown += new System.EventHandler(this.frmOverTimeNew_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.dgOverTime)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgOther)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -104,5 +133,6 @@
         private System.Windows.Forms.Button BtnExit;
         private System.Windows.Forms.Button btnCommit;
         private System.Windows.Forms.DataGridView dgOverTime;
+        private System.Windows.Forms.DataGridView dgOther;
     }
 }

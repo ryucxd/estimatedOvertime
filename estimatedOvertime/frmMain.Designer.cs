@@ -159,9 +159,9 @@
             this.lblTotalOTNeeded.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTotalOTNeeded.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTotalOTNeeded.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblTotalOTNeeded.Location = new System.Drawing.Point(589, 389);
+            this.lblTotalOTNeeded.Location = new System.Drawing.Point(586, 389);
             this.lblTotalOTNeeded.Name = "lblTotalOTNeeded";
-            this.lblTotalOTNeeded.Size = new System.Drawing.Size(193, 26);
+            this.lblTotalOTNeeded.Size = new System.Drawing.Size(193, 43);
             this.lblTotalOTNeeded.TabIndex = 15;
             this.lblTotalOTNeeded.Text = "No Overtime Needed";
             this.lblTotalOTNeeded.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -171,7 +171,7 @@
             this.lblOTAssigned.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblOTAssigned.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblOTAssigned.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblOTAssigned.Location = new System.Drawing.Point(589, 475);
+            this.lblOTAssigned.Location = new System.Drawing.Point(589, 474);
             this.lblOTAssigned.Name = "lblOTAssigned";
             this.lblOTAssigned.Size = new System.Drawing.Size(193, 26);
             this.lblOTAssigned.TabIndex = 16;
@@ -272,7 +272,7 @@
             this.lblFreeHours.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblFreeHours.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblFreeHours.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblFreeHours.Location = new System.Drawing.Point(589, 432);
+            this.lblFreeHours.Location = new System.Drawing.Point(589, 440);
             this.lblFreeHours.Name = "lblFreeHours";
             this.lblFreeHours.Size = new System.Drawing.Size(193, 26);
             this.lblFreeHours.TabIndex = 24;
@@ -382,7 +382,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(796, 493);
+            this.tabPage2.Size = new System.Drawing.Size(796, 509);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Other Department";
             this.tabPage2.UseVisualStyleBackColor = true;
