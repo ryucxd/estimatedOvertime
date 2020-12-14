@@ -15,9 +15,11 @@ namespace estimatedOvertime
     {
         public DateTime monday { get; set; }
         public DateTime sunday { get; set; }
+        public int prompt { get; set; }
         public frmOverTimeNew(DateTime temp) // frmWasteOfTime
         {
             InitializeComponent();
+            prompt = 0;
             //first step is get monday + sunday between the date clicked 
             if (temp.DayOfWeek == DayOfWeek.Monday)
                 monday = temp;
@@ -91,7 +93,6 @@ namespace estimatedOvertime
             DateTime temp = monday;
             //MessageBox.Show("monday = " + monday.ToShortDateString());
             //MessageBox.Show("sunday = " + sunday.ToShortDateString());
-
             //start filling grid now i guess
 
             DataTable dt = new DataTable();
@@ -126,7 +127,7 @@ namespace estimatedOvertime
             {
                 if (zzz == 0)
                 {
-                    dt.Rows[0][i] = temp.ToString("yyyy-MM-dd");
+                    dt.Rows[0][i] = temp.ToString("dd-MM-yyyy");                                                //("yyyy-MM-dd");
                     dt.Rows[1][i] = "Morning";
                     zzz = -1;
                 }
@@ -139,7 +140,7 @@ namespace estimatedOvertime
                 }
             }
 
-            string sql = "select id, forename + ' ' + surname as [name] FROM [user_info].dbo.[user] WHERE isEngineer = -1 AND id <> 260 AND id <> 3 AND id<> 29  AND id <> 14 ";
+            string sql = "select id, forename + ' ' + surname as [name] FROM [user_info].dbo.[user] WHERE isEngineer = -1 AND id <> 260 AND id <> 3 AND id<> 29  AND id <> 14 AND id <> 321";
             DataTable boys = new DataTable();
             int count = 0;
             using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
@@ -165,7 +166,7 @@ namespace estimatedOvertime
                     for (int y = 1; y < dt.Columns.Count; y++)
                     { //will add user ID after
                         sql = "select a.prior_work_day as [Prior Work Day OT],a.post_work_day as [Post Work Day OT],b.id AS[ID]  from dbo.staff_overtime a LEFT JOIN[user_info].dbo.[user] b ON a.staff_id = b.id " +
-                                 "WHERE [date] >= '" + temp.ToString("yyyy-MM-dd") + "' AND  [date] <= '" + temp.ToString("yyyy-MM-dd") + "' AND b.id = " + staff + "  Order by date ASC"; //going by a single staff means we can just search their ID
+                                 "WHERE [date] >= '" + temp.ToString("yyyy-MM-dd") + "' AND  [date] <= '" + temp.ToString("yyyy-MM-dd") + "' AND b.id = " + staff + " AND dept = 7  Order by date ASC"; //going by a single staff means we can just search their ID
                         using (SqlCommand cmd = new SqlCommand(sql, conn))
                         {
                             SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -243,7 +244,7 @@ namespace estimatedOvertime
             {
                 if (zzz == 0)
                 {
-                    dt.Rows[0][i] = temp.ToString("yyyy-MM-dd");
+                    dt.Rows[0][i] = temp.ToString("dd-MM-yyyy");                                                //("yyyy-MM-dd");
                     dt.Rows[1][i] = "Morning";
                     zzz = -1;
                 }
@@ -284,7 +285,7 @@ namespace estimatedOvertime
                     for (int y = 1; y < dt.Columns.Count; y++)
                     { //will add user ID after
                         sql = "select a.prior_work_day as [Prior Work Day OT],a.post_work_day as [Post Work Day OT],b.id AS[ID]  from dbo.staff_overtime a LEFT JOIN[user_info].dbo.[user] b ON a.staff_id = b.id " +
-                                 "WHERE [date] >= '" + temp.ToString("yyyy-MM-dd") + "' AND  [date] <= '" + temp.ToString("yyyy-MM-dd") + "' AND b.id = " + staff + "  Order by date ASC"; //going by a single staff means we can just search their ID
+                                 "WHERE [date] >= '" + temp.ToString("yyyy-MM-dd") + "' AND  [date] <= '" + temp.ToString("yyyy-MM-dd") + "' AND b.id = " + staff + " AND dept <> 7  Order by date ASC"; //going by a single staff means we can just search their ID
                         using (SqlCommand cmd = new SqlCommand(sql, conn))
                         {
                             SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -293,7 +294,7 @@ namespace estimatedOvertime
                             //add this person into the 
                             if (data.Rows.Count == 0) //if its null just stamp 0 here rather than updating
                             {
-                                dt.Rows[i + 1][0] = name; //add one because i starts on the monrning/afternoon line
+                                dt.Rows[i + 1][0] = name; //add one because it starts on the monrning/afternoon line
                                 dt.Rows[i + 1][y] = "0";
                                 dt.Rows[i + 1][y + 1] = "0";
                             }
@@ -335,8 +336,9 @@ namespace estimatedOvertime
             dgOverTime.ClearSelection(); //removes that annoying highlight that is in the top left
         }
 
-        private void btnCommit_Click(object sender, EventArgs e)
-        { 
+        private void btnCommit_Click(object sender, EventArgs e)  // ANY CHANGES HERE NEEDS TO REFLECT THE MAIN FORM [OTHER DEPT] TAB
+        {
+            prompt = 0;
             DateTime temp = monday;
             //update programming ot first
             using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
@@ -504,6 +506,29 @@ namespace estimatedOvertime
                     conn.Close();
                 }
             }
+        }
+
+        private void frmOverTimeNew_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            btnCommit.Focus();
+            if (prompt == -1)
+            {
+                DialogResult result = MessageBox.Show("Would you like to save the overtime before exiting?", "Unsaved changes!", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    btnCommit.PerformClick();
+                }
+            }
+        }
+
+        private void dgOverTime_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            prompt = -1;
+        }
+
+        private void dgOther_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            prompt = -1;
         }
     }
 }

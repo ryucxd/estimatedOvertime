@@ -17,6 +17,12 @@ namespace estimatedOvertime
         public DateTime startDate7Days { get; set; }
         public DateTime endDate7Days { get; set; }
         public DateTime testTTTTT { get; set; }
+
+        /////////////////////// variables copied from newovertime layout
+         public DateTime monday { get; set; }
+        public DateTime sunday { get; set; }
+        public int prompt { get; set; }
+        ///////////////////////
         public double nonDoorValue { get; set; }
 
         //dgv indexs 
@@ -51,7 +57,7 @@ namespace estimatedOvertime
             nonDoorValue = 0.3;
             using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionStringUser))
             {
-                using (SqlCommand cmd = new SqlCommand("SELECT id as ID, forename + ' ' + surname as [Full Name] FROM dbo.[user] WHERE isEngineer = -1 AND id <> 260 AND id <> 3 AND id <> 29 AND id <> 13 AND id <> 14AND id <> 241 ", conn))
+                using (SqlCommand cmd = new SqlCommand("SELECT id as ID, forename + ' ' + surname as [Full Name] FROM dbo.[user] WHERE isEngineer = -1 AND id <> 260 AND id <> 3 AND id <> 29 AND id <> 13 AND id <> 14AND id <> 241 AND id <> 321", conn))
                 {
                     conn.Open();
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -59,7 +65,6 @@ namespace estimatedOvertime
                     da.Fill(dt);
                     dgStaff.DataSource = dt;
                     conn.Close();
-
                 }
                 dgStaff.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                 dgStaff.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
@@ -97,7 +102,7 @@ namespace estimatedOvertime
                     dgDays.Columns.Remove("Programming Date");
                 }
                 if (dgDays.Columns.Contains("Spare Hours") == true)
-                {
+                { 
                     dgDays.Columns.Remove("Spare Hours");
                 }
                 if (dgDays.Columns.Contains("Completion Date") == true)
@@ -241,56 +246,84 @@ namespace estimatedOvertime
             }
             else //else its the other dept so we just use this to filter days for other dept overtime
             {
-                //THE BELOW STRING IS FOR 
+                //first step is get monday + sunday between the date clicked 
+                DateTime temp = dteStart.Value;
+              
+                if (temp.DayOfWeek == DayOfWeek.Monday)
+                    monday = temp;
+                else
+                {
+                    for (int i = 0; i < 7; i++)
+                    {
+                        temp = temp.AddDays(-1);
+                        if (temp.DayOfWeek == DayOfWeek.Monday)
+                            i = 8;
+                    }
+                    monday = temp;
+                  
+                }
+                sunday = monday.AddDays(6);
+                lblOTDATE.Text = "Overtime for week of " + monday.ToString("dd-MM-yyyy");
+                loadDGVProgramming();
+                loadDGVOther();
+                formatOther();
+                insertData();
+
+
+
+
+                //below code has been retired because geraints wants the [new overtime layout] here instead  - 11/12/2020
+                /////////////////////////////////
+                ////THE BELOW STRING IS FOR 
+                ////string sql = "";
+                //DataTable dt = new DataTable();
+                //dt.Columns.Add("Date");
+                //dt.Columns.Add("Day of Week");
+                //dt.Columns.Add("Over Time");
+                ////DataRow row2 = dt.NewRow();
+                ////dt.Rows.Add(row2);
+                //double countDays = (dteStart.Value - dteEnd.Value).Days;
+                //if (countDays < 0)
+                //    countDays = countDays * -1;
+                //DateTime tempDate = dteStart.Value;
+                //for (int i = 0; i < countDays + 2; i++)
+                //{
+                //    DataRow row = dt.NewRow();
+                //    dt.Rows.Add(row);
+                //    dt.Rows[i][0] = tempDate.ToString("yyyy-MM-dd");
+                //    tempDate = tempDate.AddDays(1);
+                //}
+
                 //string sql = "";
-                DataTable dt = new DataTable();
-                dt.Columns.Add("Date");
-                dt.Columns.Add("Day of Week");
-                dt.Columns.Add("Over Time");
-                //DataRow row2 = dt.NewRow();
-                //dt.Rows.Add(row2);
-                double countDays = (dteStart.Value - dteEnd.Value).Days;
-                if (countDays < 0)
-                    countDays = countDays * -1;
-                DateTime tempDate = dteStart.Value;
-                for (int i = 0; i < countDays + 2; i++)
-                {
-                    DataRow row = dt.NewRow();
-                    dt.Rows.Add(row);
-                    dt.Rows[i][0] = tempDate.ToString("yyyy-MM-dd");
-                    tempDate = tempDate.AddDays(1);
-                }
 
-                string sql = "";
-
-                using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
-                {
-                    conn.Open();
-                    //idk about 
-                    for (int i = 0; i < dt.Rows.Count; i++)
-                    {
-                        DateTime tempVar = Convert.ToDateTime(dt.Rows[i][0].ToString());
-                        sql = "select sum(COALESCE(prior_work_day,0) + COALESCE(post_work_day,0)) as [OT], DATENAME(dw,'" + tempVar.ToString("yyyy-MM-dd") + "') FROM dbo.staff_overtime WHERE date = '" + tempVar.ToString("yyyy-MM-dd") + "' AND dept <> 7";
-                        using (SqlCommand cmd = new SqlCommand(sql, conn))
-                        {
-                            dt.Rows[i][2] = Convert.ToString(cmd.ExecuteScalar());
-                            if (dt.Rows[i][2].ToString() == "")
-                                dt.Rows[i][2] = "0";
-                        }
-                        sql = "select DATENAME(dw,'" + tempVar.ToString("yyyy-MM-dd") + "')";
-                        using (SqlCommand cmd = new SqlCommand(sql, conn))
-                        {
-                            dt.Rows[i][1] = Convert.ToString(cmd.ExecuteScalar());
-                        }
-                    }
-                    conn.Close();
-                    dgvOtherDept.DataSource = dt;
-                    foreach (DataGridViewRow row in dgvOtherDept.Rows)
-                    {
-                        if (Convert.ToInt32(row.Cells[2].Value) > 0)
-                            row.DefaultCellStyle.BackColor = Color.DarkSeaGreen;
-                    }
-                }
+                //using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
+                //{
+                //    conn.Open();
+                //    //idk about 
+                //    for (int i = 0; i < dt.Rows.Count; i++)
+                //    {
+                //        DateTime tempVar = Convert.ToDateTime(dt.Rows[i][0].ToString());
+                //        sql = "select sum(COALESCE(prior_work_day,0) + COALESCE(post_work_day,0)) as [OT], DATENAME(dw,'" + tempVar.ToString("yyyy-MM-dd") + "') FROM dbo.staff_overtime WHERE date = '" + tempVar.ToString("yyyy-MM-dd") + "' AND dept <> 7";
+                //        using (SqlCommand cmd = new SqlCommand(sql, conn))
+                //        {
+                //            dt.Rows[i][2] = Convert.ToString(cmd.ExecuteScalar());
+                //            if (dt.Rows[i][2].ToString() == "")
+                //                dt.Rows[i][2] = "0";
+                //        }
+                //        sql = "select DATENAME(dw,'" + tempVar.ToString("yyyy-MM-dd") + "')";
+                //        using (SqlCommand cmd = new SqlCommand(sql, conn))
+                //        {
+                //            dt.Rows[i][1] = Convert.ToString(cmd.ExecuteScalar());
+                //        }
+                //    }
+                //    conn.Close();
+                //    dgvOtherDept.DataSource = dt;
+                //    foreach (DataGridViewRow row in dgvOtherDept.Rows)
+                //    {
+                //        if (Convert.ToInt32(row.Cells[2].Value) > 0)
+                //            row.DefaultCellStyle.BackColor = Color.DarkSeaGreen;
+                //    }
+                //}
             }
         }
 
@@ -460,12 +493,18 @@ namespace estimatedOvertime
                 workEnd = Convert.ToDateTime("16:00:00");
 
             DateTime todayTime = DateTime.Now;
+            DateTime hoursLeft = DateTime.Now;
+            if (todayTime < workEnd)
+            {
 
-            TimeSpan timeSpan = DateTime.Parse(Convert.ToString(workEnd)).Subtract(DateTime.Parse(Convert.ToString(todayTime)));
-            DateTime hoursLeft = Convert.ToDateTime(timeSpan.ToString());
-            hoursLeft = RoundToHour(hoursLeft);
-            //hoursLeft now shows how many 'doors' are left
-            //* this by the number of men in the dept and this is the new  value???
+                TimeSpan timeSpan = DateTime.Parse(Convert.ToString(workEnd)).Subtract(DateTime.Parse(Convert.ToString(todayTime)));
+                hoursLeft = Convert.ToDateTime(timeSpan.ToString());
+                hoursLeft = RoundToHour(hoursLeft);
+                //hoursLeft now shows how many 'doors' are left
+                //* this by the number of men in the dept and this is the new  value???
+            }
+
+
 
             string sql = "";
             int staffCount = 0;
@@ -536,7 +575,8 @@ namespace estimatedOvertime
             {
                 if (row.Cells[programmingDateIndex].Value.ToString() == todayTime.ToString("yyyy-MM-dd"))
                 {
-                    row.Cells[workHoursIndex].Value = Convert.ToString(Convert.ToInt32(hoursLeft.Hour) * staffCount);
+                    if (todayTime < workEnd)
+                        row.Cells[workHoursIndex].Value = Convert.ToString(Convert.ToInt32(hoursLeft.Hour) * staffCount);
                     break;
                 }
             }
@@ -1154,7 +1194,7 @@ namespace estimatedOvertime
         private void btnEmail_Click(object sender, EventArgs e)
         {
 
-       
+
             //upload the days dgv to a table and email that bad boy
             //staff_overtime_temp
 
@@ -1162,7 +1202,7 @@ namespace estimatedOvertime
             System.IO.Directory.CreateDirectory(@"C:\temp\");
 
             //full screen it
-            
+
 
 
             //now here we are going to take a screenshot and open it in outlook
@@ -1417,7 +1457,7 @@ namespace estimatedOvertime
             if (dteStart.Value < dteEnd.Value)
             {
                 btnSearch.PerformClick(); //shouldnt need anything more than this :}
-            } 
+            }
         }
 
         private void dgvOtherDept_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -1427,6 +1467,487 @@ namespace estimatedOvertime
             frm.ShowDialog();
             btnSearch.PerformClick();
             dgvOtherDept.ClearSelection();
+        }
+
+        // new overtime voids
+        ///////////////////////////////////////////////////////////////////////////
+        private void loadDGVProgramming()
+        {
+            DateTime temp = monday;
+            //MessageBox.Show("monday = " + monday.ToShortDateString());
+            //MessageBox.Show("sunday = " + sunday.ToShortDateString());
+            //start filling grid now i guess
+
+            DataTable dt = new DataTable();
+
+            DataRow row = dt.NewRow();
+            dt.Rows.Add(row);
+            DataRow row2 = dt.NewRow();
+            dt.Rows.Add(row2);
+
+            //dt.Columns.Add("MyRow");
+            int zzz = 0;
+            string blank = " ";
+            dt.Columns.Add(blank);
+            for (int i = 0; i < 14; i++)
+            {
+                blank = blank + " ";
+                if (zzz == 0)
+                {
+                    dt.Columns.Add(temp.DayOfWeek.ToString(), typeof(String));
+                    zzz = -1;
+                }
+                else
+                {
+                    dt.Columns.Add(blank, typeof(String));
+                    temp = temp.AddDays(1);
+                    zzz = 0;
+                }
+            }
+            zzz = 0;
+            temp = monday;
+            for (int i = 1; i < dt.Columns.Count; i++)
+            {
+                if (zzz == 0)
+                {
+                    dt.Rows[0][i] = temp.ToString("dd-MM-yyyy");                                                //("yyyy-MM-dd");
+                    dt.Rows[1][i] = "Morning";
+                    zzz = -1;
+                }
+                else
+                {
+                    dt.Rows[0][i] = " ";
+                    dt.Rows[1][i] = "Afternoon";
+                    temp = temp.AddDays(1);
+                    zzz = 0;
+                }
+            }
+
+            string sql = "select id, forename + ' ' + surname as [name] FROM [user_info].dbo.[user] WHERE isEngineer = -1 AND id <> 260 AND id <> 3 AND id<> 29  AND id <> 14 AND id <> 321";
+            DataTable boys = new DataTable();
+            int count = 0;
+            using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(boys);
+                    count = Convert.ToInt32(boys.Rows.Count);
+                }
+
+                for (int i = 1; i < count + 1; i++) //loop through each  person (going to need an overtime selection in user;
+                {
+                    //loop for each user
+                    DataRow row3 = dt.NewRow();
+                    dt.Rows.Add(row3);
+                    string staff = "0";
+                    staff = boys.Rows[i - 1][0].ToString();
+                    string name = boys.Rows[i - 1][1].ToString();
+                    //  dgOverTime.DataSource = dt;
+                    temp = monday;
+                    for (int y = 1; y < dt.Columns.Count; y++)
+                    { //will add user ID after
+                        sql = "select a.prior_work_day as [Prior Work Day OT],a.post_work_day as [Post Work Day OT],b.id AS[ID]  from dbo.staff_overtime a LEFT JOIN[user_info].dbo.[user] b ON a.staff_id = b.id " +
+                                 "WHERE [date] >= '" + temp.ToString("yyyy-MM-dd") + "' AND  [date] <= '" + temp.ToString("yyyy-MM-dd") + "' AND b.id = " + staff + " AND dept = 7  Order by date ASC"; //going by a single staff means we can just search their ID
+                        using (SqlCommand cmd = new SqlCommand(sql, conn))
+                        {
+                            SqlDataAdapter da = new SqlDataAdapter(cmd);
+                            DataTable data = new DataTable();
+                            da.Fill(data);
+                            //add this person into the 
+                            if (data.Rows.Count == 0) //if its null just stamp 0 here rather than updating
+                            {
+                                dt.Rows[i + 1][0] = name; //add one because i starts on the monrning/afternoon line
+                                dt.Rows[i + 1][y] = "0";
+                                dt.Rows[i + 1][y + 1] = "0";
+                            }
+                            else
+                            {
+                                dt.Rows[i + 1][0] = name; //adds name both times but its only because the line here is 100% (was broke above)
+                                dt.Rows[i + 1][y] = data.Rows[0][0].ToString();
+                                dt.Rows[i + 1][y + 1] = data.Rows[0][1].ToString();
+                            }
+                            y = y + 1;
+                        }
+                        temp = temp.AddDays(1);   //add a day to the temp date for the sql string
+                    }
+
+                }
+
+                dt.Columns.Add(blank + " ");
+
+
+                dataGridView1.DataSource = dt;
+
+                for (int i = 0; i < count; i++)
+                {
+                    string staff_id = boys.Rows[i][0].ToString();
+                    dt.Rows[i + 2][dt.Columns.Count - 1] = staff_id;
+                }
+                conn.Close();
+            }
+        }
+
+        private void loadDGVOther() //this is copy paste from main code (any changes other than sql stuff needs to be applied here too)
+        {
+            DateTime temp = monday;
+
+            //start filling grid now i guess
+
+            DataTable dt = new DataTable();
+
+            DataRow row = dt.NewRow();
+            dt.Rows.Add(row);
+            DataRow row2 = dt.NewRow();
+            dt.Rows.Add(row2);
+
+            //dt.Columns.Add("MyRow");
+            int zzz = 0;
+            string blank = " ";
+            dt.Columns.Add(blank);
+            for (int i = 0; i < 14; i++)
+            {
+                blank = blank + " ";
+                if (zzz == 0)
+                {
+                    dt.Columns.Add(temp.DayOfWeek.ToString(), typeof(String));
+                    zzz = -1;
+                }
+                else
+                {
+                    dt.Columns.Add(blank, typeof(String));
+                    temp = temp.AddDays(1);
+                    zzz = 0;
+                }
+            }
+            zzz = 0;
+            temp = monday;
+            for (int i = 1; i < dt.Columns.Count; i++)
+            {
+                if (zzz == 0)
+                {
+                    dt.Rows[0][i] = temp.ToString("dd-MM-yyyy");                                                //("yyyy-MM-dd");
+                    dt.Rows[1][i] = "Morning";
+                    zzz = -1;
+                }
+                else
+                {
+                    dt.Rows[0][i] = " ";
+                    dt.Rows[1][i] = "Afternoon";
+                    temp = temp.AddDays(1);
+                    zzz = 0;
+                }
+            }
+
+            //string sql = "select id, forename + ' ' + surname as [name] FROM [user_info].dbo.[user] WHERE isEngineer = -1 AND id <> 260 AND id <> 3 AND id<> 29  AND id <> 14 ";
+            string sql = "select id,forename +' ' + surname as [Name],[grouping] from[user_info].dbo.[user] where[grouping] is not null and(slimline is null or slimline = 0) and[current] = 1 AND[grouping] <> 15 AND[grouping] <> 25 AND[grouping] <> 10 AND id<> 314 " +
+                    "AND id<> 226 AND id<> 4 AND id<> 27 AND id<> 28 order by [user_info].dbo.[user].[grouping] asc, forename asc";
+            DataTable boys = new DataTable();
+            int count = 0;
+            using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    da.Fill(boys);
+                    count = Convert.ToInt32(boys.Rows.Count);
+                }
+
+                for (int i = 1; i < count + 1; i++) //loop through each  person (going to need an overtime selection in user;
+                {
+                    //loop for each user
+                    DataRow row3 = dt.NewRow();
+                    dt.Rows.Add(row3);
+                    string staff = "0";
+                    staff = boys.Rows[i - 1][0].ToString();
+                    string name = boys.Rows[i - 1][1].ToString();
+                    //  dgOverTime.DataSource = dt;
+                    temp = monday;
+                    for (int y = 1; y < dt.Columns.Count; y++)
+                    { //will add user ID after
+                        sql = "select a.prior_work_day as [Prior Work Day OT],a.post_work_day as [Post Work Day OT],b.id AS[ID]  from dbo.staff_overtime a LEFT JOIN[user_info].dbo.[user] b ON a.staff_id = b.id " +
+                                 "WHERE [date] >= '" + temp.ToString("yyyy-MM-dd") + "' AND  [date] <= '" + temp.ToString("yyyy-MM-dd") + "' AND b.id = " + staff + " AND dept <> 7  Order by date ASC"; //going by a single staff means we can just search their ID
+                        using (SqlCommand cmd = new SqlCommand(sql, conn))
+                        {
+                            SqlDataAdapter da = new SqlDataAdapter(cmd);
+                            DataTable data = new DataTable();
+                            da.Fill(data);
+                            //add this person into the 
+                            if (data.Rows.Count == 0) //if its null just stamp 0 here rather than updating
+                            {
+                                dt.Rows[i + 1][0] = name; //add one because it starts on the monrning/afternoon line
+                                dt.Rows[i + 1][y] = "0";
+                                dt.Rows[i + 1][y + 1] = "0";
+                            }
+                            else
+                            {
+                                dt.Rows[i + 1][0] = name; //adds name both times but its only because the line here is 100% (was broke above)
+                                dt.Rows[i + 1][y] = data.Rows[0][0].ToString();
+                                dt.Rows[i + 1][y + 1] = data.Rows[0][1].ToString();
+                            }
+                            y = y + 1;
+                        }
+                        temp = temp.AddDays(1);   //add a day to the temp date for the sql string
+                    }
+
+                }
+
+                dt.Columns.Add(blank + " ");
+
+
+                dgOther.DataSource = dt;
+
+                for (int i = 0; i < count; i++)
+                {
+                    string staff_id = boys.Rows[i][0].ToString();
+                    dt.Rows[i + 2][dt.Columns.Count - 1] = staff_id;
+                }
+                conn.Close();
+            }
+        }
+
+        private void formatOther()
+        {
+            dataGridView1.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridView1.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dataGridView1.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dataGridView1.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dataGridView1.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dataGridView1.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dataGridView1.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dataGridView1.Columns[7].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dataGridView1.Columns[8].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dataGridView1.Columns[9].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dataGridView1.Columns[10].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dataGridView1.Columns[12].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dataGridView1.Columns[13].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dataGridView1.Columns[14].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dataGridView1.Columns[15].Visible = false;
+
+            dgOther.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dgOther.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgOther.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgOther.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgOther.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgOther.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgOther.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgOther.Columns[7].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgOther.Columns[8].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgOther.Columns[9].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgOther.Columns[10].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgOther.Columns[11].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgOther.Columns[12].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgOther.Columns[13].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgOther.Columns[14].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            dgOther.Columns[15].Visible = false;
+        }
+
+        private void insertData()
+        {
+            DateTime temp = monday;
+            //update programming ot first
+            using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
+            {
+                conn.Open();
+                for (int row = 2; row < dataGridView1.Rows.Count; row++)  //DOWN THE GRID
+                {
+                    temp = monday;
+                    string staff_id = dataGridView1.Rows[row].Cells[dataGridView1.Columns.Count - 1].Value.ToString();
+                    for (int column = 1; column < dataGridView1.Columns.Count - 1; column++) //ACROSS THE GRID            -1 because the final column is just the staff IDs
+                    {
+
+                        //check if there is data for this date/person  in deptartment 7 (programming)
+                        string sql = "SELECT id FROM dbo.staff_overtime  WHERE [staff_id] = " + staff_id + " AND  [date] = '" + temp.ToString("yyyy-MM-dd") + "' AND [dept] = 7";
+                        using (SqlCommand cmd = new SqlCommand(sql, conn))
+                        {
+                            var getData = cmd.ExecuteScalar();
+                            if (getData != null)
+                            {
+                                temp = temp.AddDays(1);
+                                column = column + 1;
+                                continue; //theres an entry so we can move on
+                            }
+                            else
+                            {
+                                sql = "INSERT INTO dbo.staff_overtime (staff_id,date,dept,[prior_work_day]  ,[post_work_day]) VALUES (" + staff_id + ",'" + temp.ToString("yyyy-MM-dd") + "',7,0,0)";
+                                using (SqlCommand cmdInsert = new SqlCommand(sql, conn))
+                                    cmdInsert.ExecuteNonQuery();
+                            }
+                        }
+
+
+                        // using (SqlCommand cmd = new SqlCommand(sql, conn))
+                        //  cmd.ExecuteNonQuery();
+
+                        temp = temp.AddDays(1); //move across one day
+                        column = column + 1; //add an extra one to skip the afterrnoon
+                    }
+                }
+
+                //now do the same but for the other dept (again its the same but we need to cater for the varying dept
+
+                for (int row = 2; row < dgOther.Rows.Count; row++)  //DOWN THE GRID
+                {
+                    temp = monday;
+                    string staff_id = dgOther.Rows[row].Cells[dgOther.Columns.Count - 1].Value.ToString();
+                    string dept = "";
+                    switch (staff_id)
+                    {
+                        case "13": //gez
+                            dept = "8";
+                            break;
+                        case "14"://kai
+                            dept = "8"; //kai conflicts with mainscreen as a programmer so im putting him as office 
+                            break;
+                        case "241"://Tim
+                            dept = "30";
+                            break;
+                        case "260"://me me me me me
+                            dept = "8"; //office is the closest thing for me i guess
+                            break;
+                        default:
+                            dept = "27"; //default the estimating boys 
+                            break;
+                    }
+                    for (int column = 1; column < dgOther.Columns.Count - 1; column++) //ACROSS THE GRID            -1 because the final column is just the staff IDs
+                    {
+                        if (conn.State == ConnectionState.Closed)
+                            conn.Open();
+
+                        //check if there is data for this date/person  in deptartment 7 (programming)
+                        string sql = "SELECT id FROM dbo.staff_overtime  WHERE [staff_id] = " + staff_id + " AND [date] = '" + temp.ToString("yyyy-MM-dd") + "' AND [dept] = " + dept;
+                        using (SqlCommand cmd = new SqlCommand(sql, conn))
+                        {
+                            var getData = cmd.ExecuteScalar();
+                            if (getData != null)
+                            {
+                                temp = temp.AddDays(1);
+                                column = column + 1;
+                                continue; //theres an entry so we can move on
+                            }
+                            else
+                            {
+                                sql = "INSERT INTO dbo.staff_overtime (staff_id,date,dept,[prior_work_day]  ,[post_work_day]) VALUES (" + staff_id + ",'" + temp.ToString("yyyy-MM-dd") + "'," + dept + ",0,0)";
+                                using (SqlCommand cmdInsert = new SqlCommand(sql, conn))
+                                    cmdInsert.ExecuteNonQuery();
+                            }
+
+                            temp = temp.AddDays(1); //move across one day
+                            column = column + 1; //add an extra one to skip the afterrnoon
+                        }
+                    }
+                    conn.Close();
+                    
+                }
+            }
+        }
+
+        private void btnCommit_Click(object sender, EventArgs e)
+        {
+            prompt = 0;
+            DateTime temp = monday;
+            //update programming ot first
+            using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
+            {
+                conn.Open();
+                for (int row = 2; row < dataGridView1.Rows.Count; row++)  //DOWN THE GRID
+                {
+                    temp = monday;
+                    string staff_id = dataGridView1.Rows[row].Cells[dataGridView1.Columns.Count - 1].Value.ToString();
+                    for (int column = 1; column < dataGridView1.Columns.Count - 1; column++) //ACROSS THE GRID            -1 because the final column is just the staff IDs
+                    {
+                        //get the morning and afternoon
+                        double morning = Convert.ToDouble(dataGridView1.Rows[row].Cells[column].Value.ToString());
+                        double afternoon = Convert.ToDouble(dataGridView1.Rows[row].Cells[column + 1].Value.ToString());  //add one to the column because its across one spot
+                        string sql = "UPDATE dbo.staff_overtime SET [prior_work_day]  =  " + morning.ToString() + ", [post_work_day] = " + afternoon.ToString() + " WHERE [staff_id] = " + staff_id + " AND  [date] = '" + temp.ToString("yyyy-MM-dd") + "' AND [dept] = 7";
+
+                        using (SqlCommand cmd = new SqlCommand(sql, conn))
+                            cmd.ExecuteNonQuery();
+
+                        temp = temp.AddDays(1); //move across one day
+                        column = column + 1; //add an extra one to skip the afterrnoon
+                    }
+                }
+                //then go through the other dept dgv 
+                //largely the same except for the sql statement and dgv names
+                for (int row = 2; row < dgOther.Rows.Count; row++)  //DOWN THE GRID
+                {
+                    temp = monday;
+                    string staff_id = dgOther.Rows[row].Cells[dgOther.Columns.Count - 1].Value.ToString();
+                    string dept = "";
+                    switch (staff_id)
+                    {
+                        case "13": //gez
+                            dept = "8";
+                            break;
+                        case "14"://kai
+                            dept = "8"; //kai conflicts with mainscreen as a programmer so im putting him as office 
+                            break;
+                        case "241"://Tim
+                            dept = "30";
+                            break;
+                        case "260"://me me me me me
+                            dept = "8"; //office is the closest thing for me i guess
+                            break;
+                        default:
+                            dept = "27"; //default the estimating boys 
+                            break;
+                    }
+                    for (int column = 1; column < dgOther.Columns.Count - 1; column++) //ACROSS THE GRID            -1 because the final column is just the staff IDs
+                    {
+                        //get the morning and afternoon
+                        double morning = Convert.ToDouble(dgOther.Rows[row].Cells[column].Value.ToString());
+                        double afternoon = Convert.ToDouble(dgOther.Rows[row].Cells[column + 1].Value.ToString());  //add one to the column because its across one spot
+                        string sql = "UPDATE dbo.staff_overtime SET [prior_work_day]  =  " + morning.ToString() + ", [post_work_day] = " + afternoon.ToString() + " WHERE [staff_id] = " + staff_id + " AND  [date] = '" + temp.ToString("yyyy-MM-dd") + "' AND [dept] = " + dept; //dept to make sure people in multiple dept dont overlap
+
+
+                        using (SqlCommand cmd = new SqlCommand(sql, conn))
+                            cmd.ExecuteNonQuery();
+
+                        temp = temp.AddDays(1); //move across one day
+                        column = column + 1; //add an extra one to skip the afterrnoon
+                    }
+                }
+                conn.Close();
+                MessageBox.Show("Overtime has been saved!", "Overtime", MessageBoxButtons.OK);
+            }
+        }
+
+        private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Are you sure you want to exit?", "Warning", MessageBoxButtons.YesNo);
+            if (result == DialogResult.No)
+            {
+                e.Cancel = true;
+            }
+            else
+            {
+                //check if there are unsaved changes 
+                if (tabControl1.SelectedIndex == 1)
+                {
+                    btnCommit.Focus();
+                    if (prompt == -1)
+                    {
+                        DialogResult result2 = MessageBox.Show("Would you like to save the overtime before exiting?", "Unsaved changes!", MessageBoxButtons.YesNo);
+                        if (result2 == DialogResult.Yes)
+                        {
+                            btnCommit.PerformClick();
+                        }
+                    }
+                }
+            }
+        }
+
+        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            prompt = -1;
+        }
+
+        private void dgOther_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            prompt = -1;
         }
     }
 }

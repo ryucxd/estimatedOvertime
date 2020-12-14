@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.label1 = new System.Windows.Forms.Label();
             this.dteEnd = new System.Windows.Forms.DateTimePicker();
             this.dteStart = new System.Windows.Forms.DateTimePicker();
@@ -54,6 +56,12 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.lblOTDATE = new System.Windows.Forms.Label();
+            this.btnCommit = new System.Windows.Forms.Button();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.dgOther = new System.Windows.Forms.DataGridView();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.dgvOtherDept = new System.Windows.Forms.DataGridView();
             this.label = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
@@ -64,6 +72,8 @@
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgOther)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvOtherDept)).BeginInit();
             this.SuspendLayout();
             // 
@@ -378,14 +388,115 @@
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.dgvOtherDept);
+            this.tabPage2.Controls.Add(this.lblOTDATE);
+            this.tabPage2.Controls.Add(this.btnCommit);
+            this.tabPage2.Controls.Add(this.label10);
+            this.tabPage2.Controls.Add(this.label11);
+            this.tabPage2.Controls.Add(this.dgOther);
+            this.tabPage2.Controls.Add(this.dataGridView1);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(796, 509);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Other Department";
+            this.tabPage2.Text = "OVERTIME";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // lblOTDATE
+            // 
+            this.lblOTDATE.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblOTDATE.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblOTDATE.Location = new System.Drawing.Point(6, 3);
+            this.lblOTDATE.Name = "lblOTDATE";
+            this.lblOTDATE.Size = new System.Drawing.Size(784, 20);
+            this.lblOTDATE.TabIndex = 21;
+            this.lblOTDATE.Text = "   ";
+            this.lblOTDATE.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // btnCommit
+            // 
+            this.btnCommit.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btnCommit.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCommit.Location = new System.Drawing.Point(319, 476);
+            this.btnCommit.Name = "btnCommit";
+            this.btnCommit.Size = new System.Drawing.Size(159, 27);
+            this.btnCommit.TabIndex = 20;
+            this.btnCommit.Text = "SAVE OVERTIME";
+            this.btnCommit.UseVisualStyleBackColor = true;
+            this.btnCommit.Click += new System.EventHandler(this.btnCommit_Click);
+            // 
+            // label10
+            // 
+            this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(6, 428);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(784, 20);
+            this.label10.TabIndex = 19;
+            this.label10.Text = "Other Department OverTime";
+            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label11
+            // 
+            this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(6, 32);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(784, 20);
+            this.label11.TabIndex = 18;
+            this.label11.Text = "Programming OverTime";
+            this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // dgOther
+            // 
+            this.dgOther.AllowUserToAddRows = false;
+            this.dgOther.AllowUserToDeleteRows = false;
+            this.dgOther.AllowUserToResizeColumns = false;
+            this.dgOther.AllowUserToResizeRows = false;
+            this.dgOther.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgOther.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgOther.DefaultCellStyle = dataGridViewCellStyle1;
+            this.dgOther.Location = new System.Drawing.Point(6, 451);
+            this.dgOther.Name = "dgOther";
+            this.dgOther.RowHeadersVisible = false;
+            this.dgOther.Size = new System.Drawing.Size(784, 19);
+            this.dgOther.TabIndex = 17;
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.AllowUserToResizeColumns = false;
+            this.dataGridView1.AllowUserToResizeRows = false;
+            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
+            this.dataGridView1.Location = new System.Drawing.Point(6, 55);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.RowHeadersVisible = false;
+            this.dataGridView1.Size = new System.Drawing.Size(784, 370);
+            this.dataGridView1.TabIndex = 16;
+            this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
             // 
             // dgvOtherDept
             // 
@@ -397,21 +508,22 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvOtherDept.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvOtherDept.Location = new System.Drawing.Point(6, 14);
+            this.dgvOtherDept.Location = new System.Drawing.Point(785, 12);
             this.dgvOtherDept.Name = "dgvOtherDept";
             this.dgvOtherDept.RowHeadersVisible = false;
-            this.dgvOtherDept.Size = new System.Drawing.Size(784, 473);
+            this.dgvOtherDept.Size = new System.Drawing.Size(10, 10);
             this.dgvOtherDept.TabIndex = 12;
+            this.dgvOtherDept.Visible = false;
             this.dgvOtherDept.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvOtherDept_CellDoubleClick);
             // 
             // label
             // 
             this.label.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label.Location = new System.Drawing.Point(12, 77);
+            this.label.Location = new System.Drawing.Point(4, 73);
             this.label.Name = "label";
-            this.label.Size = new System.Drawing.Size(200, 23);
+            this.label.Size = new System.Drawing.Size(418, 26);
             this.label.TabIndex = 31;
-            this.label.Text = "Select Department";
+            this.label.Text = "View Programming or General Overtime";
             this.label.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // label9
@@ -429,6 +541,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(818, 648);
+            this.Controls.Add(this.dgvOtherDept);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label);
             this.Controls.Add(this.tabControl1);
@@ -444,6 +557,7 @@
             this.Name = "frmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Estimated Over Time";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.dgDays)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgStaff)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgOverTime)).EndInit();
@@ -452,6 +566,8 @@
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgOther)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvOtherDept)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -489,5 +605,11 @@
         private System.Windows.Forms.DataGridView dgvOtherDept;
         private System.Windows.Forms.Label label;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.DataGridView dgOther;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.Button btnCommit;
+        private System.Windows.Forms.Label lblOTDATE;
     }
 }
