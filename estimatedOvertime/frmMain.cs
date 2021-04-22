@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
 using Outlook = Microsoft.Office.Interop.Outlook;
+using System.Drawing.Printing;
 
 namespace estimatedOvertime
 {
@@ -19,7 +20,7 @@ namespace estimatedOvertime
         public DateTime testTTTTT { get; set; }
 
         /////////////////////// variables copied from newovertime layout
-         public DateTime monday { get; set; }
+        public DateTime monday { get; set; }
         public DateTime sunday { get; set; }
         public int prompt { get; set; }
         ///////////////////////
@@ -43,6 +44,8 @@ namespace estimatedOvertime
         //-///////////////////////////////////////////
         public int forecastPressed { get; set; }
         public int forecastOverride { get; set; }
+        public bool _officeManager { get; set; }
+        public int emailRoute { get; set; }
 
         //blinking method vars
         public bool _hoursBlinkGreen { get; set; }
@@ -50,9 +53,15 @@ namespace estimatedOvertime
         public bool _otBlinkRed { get; set; }
         public bool _hoursBlinkRed { get; set; }
 
-        public frmMain()
+        public frmMain(bool officeManager)
         {
             InitializeComponent();
+            emailRoute = 0;
+            _officeManager = officeManager;
+            lockingRoutine(officeManager);
+
+            if (officeManager == false)
+                btnSearch.Anchor = (AnchorStyles.Left | AnchorStyles.Top);
             this.WindowState = FormWindowState.Maximized;
             nonDoorValue = 0.3;
             using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionStringUser))
@@ -102,7 +111,7 @@ namespace estimatedOvertime
                     dgDays.Columns.Remove("Programming Date");
                 }
                 if (dgDays.Columns.Contains("Spare Hours") == true)
-                { 
+                {
                     dgDays.Columns.Remove("Spare Hours");
                 }
                 if (dgDays.Columns.Contains("Completion Date") == true)
@@ -248,7 +257,7 @@ namespace estimatedOvertime
             {
                 //first step is get monday + sunday between the date clicked 
                 DateTime temp = dteStart.Value;
-              
+
                 if (temp.DayOfWeek == DayOfWeek.Monday)
                     monday = temp;
                 else
@@ -260,7 +269,7 @@ namespace estimatedOvertime
                             i = 8;
                     }
                     monday = temp;
-                  
+
                 }
                 sunday = monday.AddDays(6);
                 lblOTDATE.Text = "Overtime for week of " + monday.ToString("dd-MM-yyyy");
@@ -1437,6 +1446,11 @@ namespace estimatedOvertime
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_officeManager == false)
+            {
+                tabControl1.SelectedIndex = 1;
+                return;
+            }
             if (tabControl1.SelectedIndex == 1)
             {
                 btnEmail.Enabled = false;
@@ -1523,7 +1537,7 @@ namespace estimatedOvertime
                 }
             }
 
-            string sql = "select id, forename + ' ' + surname as [name] FROM [user_info].dbo.[user] WHERE isEngineer = -1 AND id <> 260 AND id <> 3 AND id<> 29  AND id <> 14 AND id <> 321";
+            string sql = "select id, forename + ' ' + surname as [name] FROM [user_info].dbo.[user] WHERE isEngineer = -1 AND id <> 260 AND id <> 3 AND id<> 29 "; //22/04/2021 - allowed ethan + kai to fall under programming overtime
             DataTable boys = new DataTable();
             int count = 0;
             using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
@@ -1589,7 +1603,7 @@ namespace estimatedOvertime
             }
         }
 
-        private void loadDGVOther() //this is copy paste from main code (any changes other than sql stuff needs to be applied here too)
+        private void loadDGVOther() //this is copy paste from main code (any changes other than sql stuff needs to be applied here too)  --this is the username select string string sql = "select id,forename +' ' + surname as [Name],[grouping] from[user_info].dbo.[user] where[grouping] is not null and(slimline is null or slimline = 0) and[current] = 1 AND[grouping] <> 15 AND[grouping] <> 25 AND[grouping] <> 10 AND id<> 314 " +                     "AND id<> 226 AND id<> 4 AND id<> 27 AND id<> 28 order by [user_info].dbo.[user].[grouping] asc, forename asc";
         {
             DateTime temp = monday;
 
@@ -1839,7 +1853,7 @@ namespace estimatedOvertime
                         }
                     }
                     conn.Close();
-                    
+
                 }
             }
         }
@@ -1862,7 +1876,6 @@ namespace estimatedOvertime
                         double morning = Convert.ToDouble(dataGridView1.Rows[row].Cells[column].Value.ToString());
                         double afternoon = Convert.ToDouble(dataGridView1.Rows[row].Cells[column + 1].Value.ToString());  //add one to the column because its across one spot
                         string sql = "UPDATE dbo.staff_overtime SET [prior_work_day]  =  " + morning.ToString() + ", [post_work_day] = " + afternoon.ToString() + " WHERE [staff_id] = " + staff_id + " AND  [date] = '" + temp.ToString("yyyy-MM-dd") + "' AND [dept] = 7";
-
                         using (SqlCommand cmd = new SqlCommand(sql, conn))
                             cmd.ExecuteNonQuery();
 
@@ -1911,12 +1924,14 @@ namespace estimatedOvertime
                     }
                 }
                 conn.Close();
-                MessageBox.Show("Overtime has been saved!", "Overtime", MessageBoxButtons.OK);
+                if (emailRoute != -1)
+                    MessageBox.Show("Overtime has been saved!", "Overtime", MessageBoxButtons.OK);
             }
         }
 
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
+            Application.Exit();
             DialogResult result = MessageBox.Show("Are you sure you want to exit?", "Warning", MessageBoxButtons.YesNo);
             if (result == DialogResult.No)
             {
@@ -1937,6 +1952,7 @@ namespace estimatedOvertime
                         }
                     }
                 }
+
             }
         }
 
@@ -1948,6 +1964,291 @@ namespace estimatedOvertime
         private void dgOther_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             prompt = -1;
+        }
+
+        private void btnOTEmail_Click(object sender, EventArgs e)
+        {
+            //need to capture the datagridview so we can email this
+            emailRoute = -1;
+            btnCommit.PerformClick();
+            emailRoute = 0;
+            try
+            {
+
+                //Image bit = new Bitmap(Screen.PrimaryScreen.WorkingArea.Width, Screen.PrimaryScreen.WorkingArea.Height);
+
+                //Graphics gs = Graphics.FromImage(bit);
+
+                //gs.CopyFromScreen(new Point(0, 0), new Point(0, 0), bit.Size);
+
+                //bit.Save(@"C:\temp\temp.jpg");
+
+               
+
+                //first we gottta fill up the datagridview
+                dgvEmail.Visible = true;
+                dgvEmail.BringToFront();
+
+                DateTime temp = monday;
+
+                //start filling grid now i guess
+
+                DataTable dt = new DataTable();
+
+                DataRow row = dt.NewRow();
+                dt.Rows.Add(row);
+                DataRow row2 = dt.NewRow();
+                dt.Rows.Add(row2);
+
+                //dt.Columns.Add("MyRow");
+                int zzz = 0;
+                string blank = " ";
+                dt.Columns.Add(blank);
+                for (int i = 0; i < 14; i++)
+                {
+                    blank = blank + " ";
+                    if (zzz == 0)
+                    {
+                        dt.Columns.Add(temp.DayOfWeek.ToString(), typeof(String));
+                        zzz = -1;
+                    }
+                    else
+                    {
+                        dt.Columns.Add(blank, typeof(String));
+                        temp = temp.AddDays(1);
+                        zzz = 0;
+                    }
+                }
+                zzz = 0;
+                temp = monday;
+                for (int i = 1; i < dt.Columns.Count; i++)
+                {
+                    if (zzz == 0)
+                    {
+                        dt.Rows[0][i] = temp.ToString("dd-MM-yyyy");                                                //("yyyy-MM-dd");
+                        dt.Rows[1][i] = "Morning";
+                        zzz = -1;
+                    }
+                    else
+                    {
+                        dt.Rows[0][i] = " ";
+                        dt.Rows[1][i] = "Afternoon";
+                        temp = temp.AddDays(1);
+                        zzz = 0;
+                    }
+                }
+
+                //string sql = "select id, forename + ' ' + surname as [name] FROM [user_info].dbo.[user] WHERE isEngineer = -1 AND id <> 260 AND id <> 3 AND id<> 29  AND id <> 14 ";
+                string sql = "select id,forename +' ' + surname as [Name],[grouping] from[user_info].dbo.[user] where[grouping] is not null and(slimline is null or slimline = 0) and[current] = 1 AND[grouping] <> 15 AND[grouping] <> 25 AND[grouping] <> 10 AND id<> 314 " +
+                        "AND id<> 226   order by [user_info].dbo.[user].[grouping] asc, forename asc";
+                DataTable boys = new DataTable();
+                int count = 0;
+                using (SqlConnection conn = new SqlConnection(CONNECT.ConnectionString))
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        SqlDataAdapter da = new SqlDataAdapter(cmd);
+                        da.Fill(boys);
+                        count = Convert.ToInt32(boys.Rows.Count);
+                    }
+
+                    for (int i = 1; i < count + 1; i++) //loop through each  person (going to need an overtime selection in user;
+                    {
+                        //loop for each user
+                        DataRow row3 = dt.NewRow();
+                        dt.Rows.Add(row3);
+                        string staff = "0";
+                        staff = boys.Rows[i - 1][0].ToString();
+                        string name = boys.Rows[i - 1][1].ToString();
+                        //  dgOverTime.DataSource = dt;
+                        temp = monday;
+                        for (int y = 1; y < dt.Columns.Count; y++)
+                        { //will add user ID after
+                            sql = "select a.prior_work_day as [Prior Work Day OT],a.post_work_day as [Post Work Day OT],b.id AS[ID]  from dbo.staff_overtime a LEFT JOIN[user_info].dbo.[user] b ON a.staff_id = b.id " +
+                                     "WHERE [date] >= '" + temp.ToString("yyyy-MM-dd") + "' AND  [date] <= '" + temp.ToString("yyyy-MM-dd") + "' AND b.id = " + staff + "  Order by date ASC"; //going by a single staff means we can just search their ID
+                            using (SqlCommand cmd = new SqlCommand(sql, conn))
+                            {
+                                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                                DataTable data = new DataTable();
+                                da.Fill(data);
+                                //add this person into the 
+                                if (data.Rows.Count == 0) //if its null just stamp 0 here rather than updating
+                                {
+                                    dt.Rows[i + 1][0] = name; //add one because it starts on the monrning/afternoon line
+                                    dt.Rows[i + 1][y] = "0";
+                                    dt.Rows[i + 1][y + 1] = "0";
+                                }
+                                else
+                                {
+                                    dt.Rows[i + 1][0] = name; //adds name both times but its only because the line here is 100% (was broke above)
+                                    dt.Rows[i + 1][y] = data.Rows[0][0].ToString();
+                                    dt.Rows[i + 1][y + 1] = data.Rows[0][1].ToString();
+                                }
+                                y = y + 1;
+                            }
+                            temp = temp.AddDays(1);   //add a day to the temp date for the sql string
+                        }
+
+                    }
+
+                    dt.Columns.Add(blank + " ");
+
+
+                    dgvEmail.DataSource = dt;
+
+                    for (int i = 0; i < count; i++)
+                    {
+                        string staff_id = boys.Rows[i][0].ToString();
+                        dt.Rows[i + 2][dt.Columns.Count - 1] = staff_id;
+                    }
+                    conn.Close();
+                }
+
+                for (int i = 2; i < dgvEmail.Rows.Count; i++)
+                {
+                    for (int y = 1; y < dgvEmail.Columns.Count; y++)
+                    {
+                        if (Convert.ToDouble(dgvEmail.Rows[i].Cells[y].Value.ToString()) > 0)
+                            dgvEmail.Rows[i].Cells[y].Style.BackColor = Color.DarkSeaGreen;
+                    }
+                }
+
+                ////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+                //dgvEmail.Visible = false;
+
+                //vvvvvvvvvvvvvvvvvvvvvvvv this works
+                //Resize DataGridView to full height.
+                int height = dgvEmail.Height;
+                dgvEmail.Height = (dgvEmail.RowCount + 2) * dgvEmail.RowTemplate.Height;
+                //12321
+                dgvEmail.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                dgvEmail.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dgvEmail.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dgvEmail.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dgvEmail.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dgvEmail.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dgvEmail.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dgvEmail.Columns[7].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dgvEmail.Columns[8].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dgvEmail.Columns[9].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dgvEmail.Columns[10].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dgvEmail.Columns[12].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dgvEmail.Columns[13].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dgvEmail.Columns[14].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dgvEmail.Columns[15].Visible = false;
+
+
+                //Create a Bitmap and draw the DataGridView on it.
+                Bitmap bitmap = new Bitmap(this.dgvEmail.Width, this.dgvEmail.Height);
+                dgvEmail.DrawToBitmap(bitmap, new Rectangle(0, 0, this.dgvEmail.Width, this.dgvEmail.Height));
+
+                //Resize DataGridView back to original height.
+                dgvEmail.Height = height;
+
+                //Save the Bitmap to folder.
+                bitmap.Save(@"C:\temp\overtime.jpg");
+                dgvEmail.Visible = false;
+                //printImage();
+                //create an email and add it as a attachment here~~
+                Outlook.Application outlookApp = new Outlook.Application();
+                Outlook.MailItem mailItem = outlookApp.CreateItem(Outlook.OlItemType.olMailItem);
+                mailItem.Subject = lblOTDATE.Text;
+                mailItem.To = "";
+                string imageSrc = @"C:\Temp\overtime.jpg"; // Change path as needed
+
+                var attachments = mailItem.Attachments;
+                var attachment = attachments.Add(imageSrc);
+                attachment.PropertyAccessor.SetProperty("http://schemas.microsoft.com/mapi/proptag/0x370E001F", "image/jpeg");
+                attachment.PropertyAccessor.SetProperty("http://schemas.microsoft.com/mapi/proptag/0x3712001F", "myident"); // Image identifier found in the HTML code right after cid. Can be anything.
+                mailItem.PropertyAccessor.SetProperty("http://schemas.microsoft.com/mapi/id/{00062008-0000-0000-C000-000000000046}/8514000B", true);
+
+                // Set body format to HTML
+
+                mailItem.BodyFormat = Outlook.OlBodyFormat.olFormatHTML;
+                mailItem.Attachments.Add(imageSrc);
+                string msgHTMLBody = "";
+                mailItem.HTMLBody = msgHTMLBody;
+                mailItem.Display(true);
+                //mailItem.Send();  //dont want to auto send this
+            }
+            catch
+            {
+                dgvEmail.Visible = false;
+            }
+
+        }
+
+        private void printImage()
+        {
+            try
+            {
+
+                TabPage page = tabPage2;
+
+                Bitmap bm = new Bitmap(page.ClientSize.Width, page.ClientSize.Height);
+
+                //Force the page to draw itsself.
+
+                page.Show();
+
+                page.DrawToBitmap(bm, new Rectangle(Point.Empty, page.ClientSize));
+
+                bm.Save(@"C:\temp\temp.jpg");
+
+                PrintDocument pd = new PrintDocument();
+                pd.PrintPage += (sender, args) =>
+                {
+                    Image i = Image.FromFile(@"C:\temp\temp.jpg");
+                    Point p = new Point(100, 100);
+                    args.Graphics.DrawImage(i, args.MarginBounds);
+
+                };
+
+                pd.DefaultPageSettings.Landscape = true;
+                Margins margins = new Margins(50, 50, 50, 50);
+                pd.DefaultPageSettings.Margins = margins;
+                pd.Print();
+            }
+            catch
+            {
+
+            }
+        }
+
+        private void lockingRoutine(bool officeManager)
+        {
+            if (officeManager == false)
+            {
+                tabControl1.SelectedIndex = 1;
+                // tabControl1.Enabled = false;
+
+                //datetime stuff
+                label6.Visible = false;
+                dteEnd.Value = dteEnd.Value.AddYears(1); //do this incase the user goes forward in time by a week and it would normally throw an error!
+                dteEnd.Visible = false;
+                lblDate.Text = "Date Search";
+                label.Visible = false;
+                label1.Visible = false;
+                btnOTEmail.Visible = true;
+                //other buttons on the top half
+                btnEmail.Visible = false;
+                label9.Visible = false;
+                txtTempDoors.Visible = false;
+                btnAddTempDoors.Visible = false;
+                btnSearch.PerformClick();
+                tabControl1.TabPages[0].Text = "";
+
+            }
+        }
+
+        private void frmMain_Shown(object sender, EventArgs e)
+        {
+            if (_officeManager == false)
+                btnSearch.PerformClick();
         }
     }
 }

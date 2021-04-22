@@ -258,7 +258,7 @@ namespace estimatedOvertime
             }
 
             //string sql = "select id, forename + ' ' + surname as [name] FROM [user_info].dbo.[user] WHERE isEngineer = -1 AND id <> 260 AND id <> 3 AND id<> 29  AND id <> 14 ";
-            string sql = "select id,forename +' ' + surname as [Name],[grouping] from[user_info].dbo.[user] where[grouping] is not null and(slimline is null or slimline = 0) and[current] = 1 AND[grouping] <> 15 AND[grouping] <> 25 AND[grouping] <> 10 AND id<> 314 " +
+            string sql = "select id,forename +' ' + surname as [Name],[grouping] from [user_info].dbo.[user] where[grouping] is not null and(slimline is null or slimline = 0) and[current] = 1 AND[grouping] <> 15 AND[grouping] <> 25 AND[grouping] <> 10 AND id<> 314 " +
                     "AND id<> 226 AND id<> 4 AND id<> 27 AND id<> 28 order by [user_info].dbo.[user].[grouping] asc, forename asc";
             DataTable boys = new DataTable();
             int count = 0;

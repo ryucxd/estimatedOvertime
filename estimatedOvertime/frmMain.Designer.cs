@@ -28,8 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.label1 = new System.Windows.Forms.Label();
             this.dteEnd = new System.Windows.Forms.DateTimePicker();
             this.dteStart = new System.Windows.Forms.DateTimePicker();
@@ -56,6 +57,8 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.dgvEmail = new System.Windows.Forms.DataGridView();
+            this.btnOTEmail = new System.Windows.Forms.Button();
             this.lblOTDATE = new System.Windows.Forms.Label();
             this.btnCommit = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
@@ -72,6 +75,7 @@
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvEmail)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgOther)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvOtherDept)).BeginInit();
@@ -102,7 +106,8 @@
             // 
             // btnSearch
             // 
-            this.btnSearch.Location = new System.Drawing.Point(460, 30);
+            this.btnSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSearch.Location = new System.Drawing.Point(216, 33);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(119, 23);
             this.btnSearch.TabIndex = 10;
@@ -268,8 +273,9 @@
             // 
             // btnEmail
             // 
+            this.btnEmail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnEmail.Enabled = false;
-            this.btnEmail.Location = new System.Drawing.Point(586, 30);
+            this.btnEmail.Location = new System.Drawing.Point(342, 33);
             this.btnEmail.Name = "btnEmail";
             this.btnEmail.Size = new System.Drawing.Size(120, 23);
             this.btnEmail.TabIndex = 23;
@@ -319,8 +325,9 @@
             // 
             // btnAddTempDoors
             // 
+            this.btnAddTempDoors.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnAddTempDoors.Enabled = false;
-            this.btnAddTempDoors.Location = new System.Drawing.Point(585, 78);
+            this.btnAddTempDoors.Location = new System.Drawing.Point(342, 81);
             this.btnAddTempDoors.Name = "btnAddTempDoors";
             this.btnAddTempDoors.Size = new System.Drawing.Size(120, 23);
             this.btnAddTempDoors.TabIndex = 27;
@@ -330,7 +337,8 @@
             // 
             // txtTempDoors
             // 
-            this.txtTempDoors.Location = new System.Drawing.Point(459, 80);
+            this.txtTempDoors.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtTempDoors.Location = new System.Drawing.Point(215, 84);
             this.txtTempDoors.Name = "txtTempDoors";
             this.txtTempDoors.Size = new System.Drawing.Size(120, 20);
             this.txtTempDoors.TabIndex = 28;
@@ -358,7 +366,7 @@
             this.tabControl1.Location = new System.Drawing.Point(12, 101);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(804, 535);
+            this.tabControl1.Size = new System.Drawing.Size(540, 535);
             this.tabControl1.TabIndex = 30;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -388,6 +396,8 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.dgvEmail);
+            this.tabPage2.Controls.Add(this.btnOTEmail);
             this.tabPage2.Controls.Add(this.lblOTDATE);
             this.tabPage2.Controls.Add(this.btnCommit);
             this.tabPage2.Controls.Add(this.label10);
@@ -397,10 +407,45 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(796, 509);
+            this.tabPage2.Size = new System.Drawing.Size(532, 509);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "OVERTIME";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // dgvEmail
+            // 
+            this.dgvEmail.AllowUserToAddRows = false;
+            this.dgvEmail.AllowUserToDeleteRows = false;
+            this.dgvEmail.AllowUserToResizeColumns = false;
+            this.dgvEmail.AllowUserToResizeRows = false;
+            this.dgvEmail.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvEmail.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvEmail.DefaultCellStyle = dataGridViewCellStyle4;
+            this.dgvEmail.Location = new System.Drawing.Point(3, 26);
+            this.dgvEmail.Name = "dgvEmail";
+            this.dgvEmail.RowHeadersVisible = false;
+            this.dgvEmail.Size = new System.Drawing.Size(526, 14);
+            this.dgvEmail.TabIndex = 23;
+            this.dgvEmail.Visible = false;
+            // 
+            // btnOTEmail
+            // 
+            this.btnOTEmail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnOTEmail.Location = new System.Drawing.Point(418, 26);
+            this.btnOTEmail.Name = "btnOTEmail";
+            this.btnOTEmail.Size = new System.Drawing.Size(108, 23);
+            this.btnOTEmail.TabIndex = 22;
+            this.btnOTEmail.Text = "Email";
+            this.btnOTEmail.UseVisualStyleBackColor = true;
+            this.btnOTEmail.Click += new System.EventHandler(this.btnOTEmail_Click);
             // 
             // lblOTDATE
             // 
@@ -409,7 +454,7 @@
             this.lblOTDATE.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblOTDATE.Location = new System.Drawing.Point(6, 3);
             this.lblOTDATE.Name = "lblOTDATE";
-            this.lblOTDATE.Size = new System.Drawing.Size(784, 20);
+            this.lblOTDATE.Size = new System.Drawing.Size(520, 20);
             this.lblOTDATE.TabIndex = 21;
             this.lblOTDATE.Text = "   ";
             this.lblOTDATE.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -418,7 +463,7 @@
             // 
             this.btnCommit.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.btnCommit.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCommit.Location = new System.Drawing.Point(319, 476);
+            this.btnCommit.Location = new System.Drawing.Point(187, 476);
             this.btnCommit.Name = "btnCommit";
             this.btnCommit.Size = new System.Drawing.Size(159, 27);
             this.btnCommit.TabIndex = 20;
@@ -433,7 +478,7 @@
             this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label10.Location = new System.Drawing.Point(6, 428);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(784, 20);
+            this.label10.Size = new System.Drawing.Size(520, 20);
             this.label10.TabIndex = 19;
             this.label10.Text = "Other Department OverTime";
             this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -445,7 +490,7 @@
             this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label11.Location = new System.Drawing.Point(6, 32);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(784, 20);
+            this.label11.Size = new System.Drawing.Size(520, 20);
             this.label11.TabIndex = 18;
             this.label11.Text = "Programming OverTime";
             this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -460,18 +505,18 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgOther.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgOther.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgOther.DefaultCellStyle = dataGridViewCellStyle5;
             this.dgOther.Location = new System.Drawing.Point(6, 451);
             this.dgOther.Name = "dgOther";
             this.dgOther.RowHeadersVisible = false;
-            this.dgOther.Size = new System.Drawing.Size(784, 19);
+            this.dgOther.Size = new System.Drawing.Size(520, 19);
             this.dgOther.TabIndex = 17;
             // 
             // dataGridView1
@@ -483,18 +528,18 @@
             this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle6;
             this.dataGridView1.Location = new System.Drawing.Point(6, 55);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.Size = new System.Drawing.Size(784, 370);
+            this.dataGridView1.Size = new System.Drawing.Size(520, 370);
             this.dataGridView1.TabIndex = 16;
             this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
             // 
@@ -511,7 +556,7 @@
             this.dgvOtherDept.Location = new System.Drawing.Point(785, 12);
             this.dgvOtherDept.Name = "dgvOtherDept";
             this.dgvOtherDept.RowHeadersVisible = false;
-            this.dgvOtherDept.Size = new System.Drawing.Size(10, 10);
+            this.dgvOtherDept.Size = new System.Drawing.Size(0, 10);
             this.dgvOtherDept.TabIndex = 12;
             this.dgvOtherDept.Visible = false;
             this.dgvOtherDept.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvOtherDept_CellDoubleClick);
@@ -519,7 +564,7 @@
             // label
             // 
             this.label.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label.Location = new System.Drawing.Point(4, 73);
+            this.label.Location = new System.Drawing.Point(15, 72);
             this.label.Name = "label";
             this.label.Size = new System.Drawing.Size(418, 26);
             this.label.TabIndex = 31;
@@ -528,8 +573,9 @@
             // 
             // label9
             // 
+            this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(459, 57);
+            this.label9.Location = new System.Drawing.Point(215, 61);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(336, 20);
             this.label9.TabIndex = 32;
@@ -540,7 +586,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(818, 648);
+            this.ClientSize = new System.Drawing.Size(554, 648);
             this.Controls.Add(this.dgvOtherDept);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label);
@@ -558,6 +604,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Estimated Over Time";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
+            this.Shown += new System.EventHandler(this.frmMain_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.dgDays)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgStaff)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgOverTime)).EndInit();
@@ -566,6 +613,7 @@
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvEmail)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgOther)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvOtherDept)).EndInit();
@@ -611,5 +659,7 @@
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Button btnCommit;
         private System.Windows.Forms.Label lblOTDATE;
+        private System.Windows.Forms.Button btnOTEmail;
+        private System.Windows.Forms.DataGridView dgvEmail;
     }
 }
