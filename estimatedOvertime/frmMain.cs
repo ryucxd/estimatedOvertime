@@ -2250,5 +2250,10 @@ namespace estimatedOvertime
             if (_officeManager == false)
                 btnSearch.PerformClick();
         }
+
+        private void label11_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
